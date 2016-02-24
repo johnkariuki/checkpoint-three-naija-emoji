@@ -105,6 +105,16 @@ $app->get('/emojis/{id}', function (Request $request, Response $response, array 
     return $response->write($message);
 });
 
+/**
+ * @route POST /emojis
+ *
+ * @method  POST emojis (POST) Add a new emoji record.
+ *
+ * @requiredParams none
+ * @queryParams none
+ *
+ * @return  JSON data of success or failure in adding new record.
+ */
 $app->post('/emojis', function (Request $request, Response $response, array $args) {
     $data = $request->getParsedBody();
     try {
