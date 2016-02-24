@@ -20,7 +20,8 @@
         "slim/php-view": "^2.0",
         "monolog/monolog": "^1.17",
         "phpunit/phpunit": "^5.2",
-        "john-kariuki/potato-orm": "^1.0"
+        "john-kariuki/potato-orm": "^1.0",
+        "nesbot/carbon": "^1.21"
     },
     "require-dev": {},
     "autoload": {

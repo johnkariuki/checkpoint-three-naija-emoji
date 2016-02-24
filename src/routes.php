@@ -6,7 +6,7 @@
  * @author John Kariuki john.kariuki@andela.com
  *
  * @statuscodes = {
- *              200 - OK
+ *     200 - OK
  *     201 - Created
  *     204 - No content
  *     304 - Not Modified
@@ -25,7 +25,7 @@ use Carbon\Carbon;
  * @method  root (GET) Root URI to Naija emoji API service
  * @requiredParams none
  * @queryParams none
- * @returns JSON data of the request
+ * @return JSON data of the request
  */
 $app->get('/', function (Request $request, Response $response, array $args) {
 
@@ -35,5 +35,38 @@ $app->get('/', function (Request $request, Response $response, array $args) {
         'message' => 'welcome to the naija-emoji RESTful Api'
     ]);
 
+    return $response->write($message);
+});
+
+/**
+ * @route /emojis
+ * @method  emojis (GET) Return all records of emojis from database
+ * @requiredParams none
+ * @queryParams none
+ * @return JSON data of all emoji records
+ */
+$app->get('/emojis', function (Request $request, Response $response, array $args) {
+    try {
+
+        $emojis = EmojiManagerController::getAll();
+
+        if (count($emojis) > 0) {
+            $response = $response->withStatus(200);
+        } else {
+            $response = $response->withStatus(204);
+        }
+
+        $message = json_encode([
+            'message' => $emojis
+        ]);
+
+    } catch (PDOException $e) {
+        $response = $response->withStatus(400);
+        $message = json_encode([
+            'message' => $e->getMessage()
+        ]);
+    }
+
+    $response = $response->withHeader('Content-type', 'application/json');
     return $response->write($message);
 });
