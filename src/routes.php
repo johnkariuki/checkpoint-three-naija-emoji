@@ -94,10 +94,63 @@ $app->get('/emojis/{id}', function (Request $request, Response $response, array 
             'message' => EmojiManagerController::findRecord($args['id'])
         ]);
     } catch (PDOException $e) {
+
         $response = $response->withStatus(400);
         $message = json_encode([
             'message' => $e->getMessage()
         ]);
+    }
+
+    $response = $response->withHeader('Content-type', 'application/json');
+    return $response->write($message);
+});
+
+$app->post('/emojis', function (Request $request, Response $response, array $args) {
+    $data = $request->getParsedBody();
+    try {
+        if (count(array_diff(['name', 'char', 'keywords', 'category'], array_keys($data)))) {
+            throw new Exception("Missing some required fields");
+        } else {
+
+            $emoji = new EmojiManagerController();
+
+            $emoji->name = $data["name"];
+            $emoji->char = $data["char"];
+            $emoji->keywords = json_encode(explode(",", $data["keywords"]));
+            $emoji->category = $data["category"];
+            $emoji->date_created = Carbon::now()->toDateTimeString();
+            $emoji->date_modified = Carbon::now()->toDateTimeString();
+            $emoji->created_by = $data["created_by"];
+
+            try {
+                if ($emoji->save()) {
+
+                    $response = $response->withStatus(200);
+                    $message = json_encode([
+                        "message" => "Emoji added succesfully"
+                    ]);
+                } else {
+
+                    $response = $response->withStatus(304);
+                    $message = json_encode([
+                        "message" => "Error adding emoji"
+                    ]);
+                }
+
+            } catch (PDOException $e) {
+
+                $response = $response->withStatus(400);
+                $message = json_encode([
+                    "message" => $e->getMessage()
+                ]);
+            }
+        }
+    } catch (Exception $e) {
+
+        $message = json_encode([
+            "message" => "Missing some required fields"
+        ]);
+        $response = $response->withStatus(400);
     }
 
     $response = $response->withHeader('Content-type', 'application/json');
