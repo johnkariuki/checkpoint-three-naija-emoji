@@ -119,7 +119,7 @@ $app->post('/emojis', function (Request $request, Response $response, array $arg
     $data = $request->getParsedBody();
     try {
         if (count(array_diff(['name', 'char', 'keywords', 'category'], array_keys($data)))) {
-            throw new Exception("Missing some required fields");
+            throw new PDOException("Missing some required fields");
         } else {
 
             $emoji = new EmojiManagerController();
@@ -132,37 +132,99 @@ $app->post('/emojis', function (Request $request, Response $response, array $arg
             $emoji->date_modified = Carbon::now()->toDateTimeString();
             $emoji->created_by = $data["created_by"];
 
-            try {
-                if ($emoji->save()) {
+            if ($emoji->save()) {
 
-                    $response = $response->withStatus(200);
-                    $message = json_encode([
-                        "message" => "Emoji added succesfully"
-                    ]);
-                } else {
-
-                    $response = $response->withStatus(304);
-                    $message = json_encode([
-                        "message" => "Error adding emoji"
-                    ]);
-                }
-
-            } catch (PDOException $e) {
-
-                $response = $response->withStatus(400);
+                $response = $response->withStatus(200);
                 $message = json_encode([
-                    "message" => $e->getMessage()
+                    "message" => "Emoji added succesfully."
+                ]);
+            } else {
+
+                $response = $response->withStatus(304);
+                $message = json_encode([
+                    "message" => "Error adding emoji."
                 ]);
             }
         }
-    } catch (Exception $e) {
+    } catch (PDOException $e) {
 
-        $message = json_encode([
-            "message" => "Missing some required fields"
-        ]);
         $response = $response->withStatus(400);
+        $message = json_encode([
+            "message" => $e->getMessage()
+        ]);
     }
 
     $response = $response->withHeader('Content-type', 'application/json');
     return $response->write($message);
+});
+
+$app->put('/emojis/{id}', function (Request $request, Response $response, array $args) {
+    try {
+        $emoji = EmojiManagerController::find($args['id']);
+
+        if (count(array_diff(['name', 'char', 'keywords', 'category'], array_keys($request->getParsedBody())))) {
+            throw new PDOException("Missing some required fields");
+        } else {
+            foreach ($request->getParsedBody() as $key => $value) {
+                $emoji->$key = $key === "keywords" ? json_encode(explode(",", $value)) : $value;
+            }
+
+            $emoji->date_modified = Carbon::now()->toDateTimeString();
+            if ($emoji->save()) {
+
+                $response = $response->withStatus(200);
+                $message = json_encode([
+                    "message" => "Emoji updated succesfully."
+                ]);
+            } else {
+
+                $response = $response->withStatus(304);
+                $message = json_encode([
+                    "message" => "Error updating emoji."
+                ]);
+            }
+        }
+    } catch (PDOException $e) {
+
+        $response = $response->withStatus(400);
+        $message = json_encode([
+            "message" => $e->getMessage()
+        ]);
+    }
+
+    $response = $response->withHeader('Content-type', 'application/json');
+    return $response->write($message);
+});
+
+$app->patch('/emojis/{id}', function (Request $request, Response $response, array $args) {
+    try {
+
+        $emoji = EmojiManagerController::find($args['id']);
+        foreach ($request->getParsedBody() as $key => $value) {
+            $emoji->$key = $key === "keywords" ? json_encode(explode(",", $value)) : $value;
+        }
+        $emoji->date_modified = Carbon::now()->toDateTimeString();
+        if ($emoji->save()) {
+
+            $response = $response->withStatus(200);
+            $message = json_encode([
+                "message" => "Emoji updated succesfully"
+            ]);
+        } else {
+
+            $response = $response->withStatus(304);
+            $message = json_encode([
+                "message" => "Error updating emoji"
+            ]);
+        }
+    } catch (PDOException $e) {
+
+        $response = $response->withStatus(400);
+        $message = json_encode([
+            "message" => $e->getMessage()
+        ]);
+    }
+
+        $response = $response->withHeader('Content-type', 'application/json');
+        return $response->write($message);
 });
