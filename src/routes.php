@@ -21,14 +21,14 @@ use \NaijaEmoji\Manager\EmojiManagerController;
 use Carbon\Carbon;
 
 /**
- * @route /
+ * @route GET /
  *
- * @method  root (GET) Root URI to Naija emoji API service
+ * @method  root (GET) Root URI to Naija emoji API service.
  *
  * @requiredParams none
  * @queryParams none
  *
- * @return JSON data of the request
+ * @return JSON data of the request.
  */
 $app->get('/', function (Request $request, Response $response, array $args) {
 
@@ -42,14 +42,14 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 });
 
 /**
- * @route /emojis
+ * @route GET /emojis
  *
- * @method  emojis (GET) Return all records of emojis from database
+ * @method  emojis (GET) Return all records of emojis from database.
  *
  * @requiredParams none
  * @queryParams none
  *
- * @return JSON data of all emoji records
+ * @return JSON data of all emoji records.
  */
 $app->get('/emojis', function (Request $request, Response $response, array $args) {
     try {
@@ -57,8 +57,10 @@ $app->get('/emojis', function (Request $request, Response $response, array $args
         $emojis = EmojiManagerController::getAll();
 
         if (count($emojis) > 0) {
+
             $response = $response->withStatus(200);
         } else {
+
             $response = $response->withStatus(204);
         }
 
@@ -67,6 +69,7 @@ $app->get('/emojis', function (Request $request, Response $response, array $args
         ]);
 
     } catch (PDOException $e) {
+
         $response = $response->withStatus(400);
         $message = json_encode([
             'message' => $e->getMessage()
@@ -78,17 +81,18 @@ $app->get('/emojis', function (Request $request, Response $response, array $args
 });
 
 /**
- * @route /emojis/{id}
+ * @route GET /emojis/{id}
  *
- * @method  emojis/{id}(GET id) Return a record whose primary key matches provided id
+ * @method  emojis/{id}(GET, id) Return a record whose primary key matches provided id.
  *
  * @requiredParams id
  * @queryParams id
  *
- * $return JSON data for a record whose primary key matches provided id
+ * $return JSON data for a record whose primary key matches provided id.
  */
 $app->get('/emojis/{id}', function (Request $request, Response $response, array $args) {
     try {
+
         $response = $response->withStatus(200);
         $message = json_encode([
             'message' => EmojiManagerController::findRecord($args['id'])
@@ -108,7 +112,7 @@ $app->get('/emojis/{id}', function (Request $request, Response $response, array 
 /**
  * @route POST /emojis
  *
- * @method  POST emojis (POST) Add a new emoji record.
+ * @method  /emojis (POST) Add a new emoji record.
  *
  * @requiredParams none
  * @queryParams none
@@ -158,6 +162,16 @@ $app->post('/emojis', function (Request $request, Response $response, array $arg
     return $response->write($message);
 });
 
+/**
+ * @route PUT /emojis/{id}
+ *
+ * @method  /emojis/{id} (PUT, id) Update all fields in an emoji record.
+ *
+ * @requiredParams id
+ * @queryParams id
+ *
+ * @return JSON data of success or failure of put request activity.
+ */
 $app->put('/emojis/{id}', function (Request $request, Response $response, array $args) {
     try {
         $emoji = EmojiManagerController::find($args['id']);
@@ -196,6 +210,17 @@ $app->put('/emojis/{id}', function (Request $request, Response $response, array 
     return $response->write($message);
 });
 
+/**
+ * @route PATCH /emojis/{id}
+ *
+ * @method  /emojis/{id} (PATCH, id) Update specific field in an emoji record.
+ *
+ * @requiredParams id
+ * @queryParams id
+ *
+ * @return JSON data of success or failure of put request activity.
+ */
+
 $app->patch('/emojis/{id}', function (Request $request, Response $response, array $args) {
     try {
 
@@ -229,6 +254,16 @@ $app->patch('/emojis/{id}', function (Request $request, Response $response, arra
     return $response->write($message);
 });
 
+/**
+ * @route DELETE /emojis/{id}
+ *
+ * @method  /emojis/{id} (DELETE, id) Delete an emoji record.
+ *
+ * @requiredParams id
+ * @queryParams id
+ *
+ * @return Delete an emoji record.
+ */
 $app->delete('/emojis/{id}', function (Request $request, Response $response, array $args) {
 
     $data = $request->getParsedBody();
