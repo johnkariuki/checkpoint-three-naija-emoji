@@ -225,6 +225,36 @@ $app->patch('/emojis/{id}', function (Request $request, Response $response, arra
         ]);
     }
 
-        $response = $response->withHeader('Content-type', 'application/json');
-        return $response->write($message);
+    $response = $response->withHeader('Content-type', 'application/json');
+    return $response->write($message);
+});
+
+$app->delete('/emojis/{id}', function (Request $request, Response $response, array $args) {
+
+    $data = $request->getParsedBody();
+    try {
+
+        if (EmojiManagerController::destroy($args['id'])) {
+
+            $response = $response->withStatus(200);
+            $message = json_encode([
+                "message" => "Emoji deleted succesfully."
+            ]);
+        } else {
+
+            $response = $response->withStatus(400);
+            $message = json_encode([
+                "message" => "Error deleting emoji."
+            ]);
+        }
+    } catch (PDOException $e) {
+
+        $response = $response->withStatus(400);
+        $message = json_encode([
+            "message" => $e->getMessage()
+        ]);
+    }
+
+    $response = $response->withHeader('Content-type', 'application/json');
+    return $response->write($message);
 });
