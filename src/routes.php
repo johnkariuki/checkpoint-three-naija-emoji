@@ -22,9 +22,12 @@ use Carbon\Carbon;
 
 /**
  * @route /
+ *
  * @method  root (GET) Root URI to Naija emoji API service
+ *
  * @requiredParams none
  * @queryParams none
+ *
  * @return JSON data of the request
  */
 $app->get('/', function (Request $request, Response $response, array $args) {
@@ -40,9 +43,12 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 
 /**
  * @route /emojis
+ *
  * @method  emojis (GET) Return all records of emojis from database
+ *
  * @requiredParams none
  * @queryParams none
+ *
  * @return JSON data of all emoji records
  */
 $app->get('/emojis', function (Request $request, Response $response, array $args) {
@@ -60,6 +66,33 @@ $app->get('/emojis', function (Request $request, Response $response, array $args
             'message' => $emojis
         ]);
 
+    } catch (PDOException $e) {
+        $response = $response->withStatus(400);
+        $message = json_encode([
+            'message' => $e->getMessage()
+        ]);
+    }
+
+    $response = $response->withHeader('Content-type', 'application/json');
+    return $response->write($message);
+});
+
+/**
+ * @route /emojis/{id}
+ *
+ * @method  emojis/{id}(GET id) Return a record whose primary key matches provided id
+ *
+ * @requiredParams id
+ * @queryParams id
+ *
+ * $return JSON data for a record whose primary key matches provided id
+ */
+$app->get('/emojis/{id}', function (Request $request, Response $response, array $args) {
+    try {
+        $response = $response->withStatus(200);
+        $message = json_encode([
+            'message' => EmojiManagerController::findRecord($args['id'])
+        ]);
     } catch (PDOException $e) {
         $response = $response->withStatus(400);
         $message = json_encode([
