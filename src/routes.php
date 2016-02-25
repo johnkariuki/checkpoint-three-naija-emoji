@@ -28,7 +28,7 @@ use \NaijaEmoji\Manager\UserManagerController;
  * @requiredParams none
  * @queryParams none
  *
- * @return JSON data of the request.
+ * @return JSON     welcome to the naija-emoji RESTful Api.
  */
 $app->get('/', function (Request $request, Response $response, array $args) {
 
@@ -43,7 +43,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
  * @requiredParams none
  * @queryParams none
  *
- * @return JSON data of all emoji records.
+ * @return JSON     List of all emojis
  */
 $app->get('/emojis', function (Request $request, Response $response, array $args) {
 
@@ -58,7 +58,7 @@ $app->get('/emojis', function (Request $request, Response $response, array $args
  * @requiredParams id
  * @queryParams id
  *
- * $return JSON data for a record whose primary key matches provided id.
+ * $return JSON     data for a record whose primary key matches provided id.
  */
 $app->get('/emojis/{id}', function (Request $request, Response $response, array $args) {
 
@@ -73,7 +73,7 @@ $app->get('/emojis/{id}', function (Request $request, Response $response, array 
  * @requiredParams none
  * @queryParams none
  *
- * @return  JSON data of success or failure in adding new record.
+ * @return  JSON    data of success or failure in adding new record.
  */
 $app->post('/emojis', function (Request $request, Response $response, array $args) {
 
@@ -88,7 +88,7 @@ $app->post('/emojis', function (Request $request, Response $response, array $arg
  * @requiredParams id
  * @queryParams id
  *
- * @return JSON data of success or failure of put request activity.
+ * @return JSON     data of success or failure of put request activity.
  */
 $app->put('/emojis/{id}', function (Request $request, Response $response, array $args) {
 
@@ -103,7 +103,7 @@ $app->put('/emojis/{id}', function (Request $request, Response $response, array 
  * @requiredParams id
  * @queryParams id
  *
- * @return JSON data of success or failure of put request activity.
+ * @return JSON     data of success or failure of put request activity.
  */
 
 $app->patch('/emojis/{id}', function (Request $request, Response $response, array $args) {
@@ -126,19 +126,48 @@ $app->delete('/emojis/{id}', function (Request $request, Response $response, arr
     return EmojiManagerController::deleteEmoji($request, $response, $args);
 });
 
+/**
+ * @route POST /auth/register
+ *
+ * @method   /auth/register (POST) Register A new user with
+ * username and password.
+ *
+ * @requiredParams none
+ * @queryParams  none
+ *
+ * @return JSON     Message of success or error in registering user
+ */
 $app->post('/auth/register', function (Request $request, Response $response, array $args) {
 
     return UserManagerController::createUser($request, $response);
 });
 
+/**
+ * @route POST /auth/login
+ *
+ * @method   /auth/login (POST) Authenticate and generate a token for the user.
+ *
+ * @requiredParams none
+ * @queryParams  none
+ *
+ * @return JSON     Generated token
+ */
 $app->post('/auth/login', function (Request $request, Response $response, array $args) {
 
     return UserManagerController::loginUser($request, $response);
 });
 
+/**
+ * @route GET /auth/logout
+ *
+ * @method   /auth/login (GET) Delete a user token.
+ *
+ * @requiredParams none
+ * @queryParams  none
+ *
+ * @return JSON     Message of succes or error in loggging a user out.
+ */
 $app->get('/auth/logout', function (Request $request, Response $response) {
 
     return UserManagerController::logoutUser($request, $response);
 });
-
-
