@@ -105,6 +105,58 @@ class UserManagerController extends PotatoModel
         return $response->write($message);
     }
 
+    public static function logoutUser($request, $response)
+    {
+        try {
+           $token = $request->getheader("HTTP_TOKEN");
+            if (is_array($token) && count($token) === 1) {
+                try {
+                    $token = self::findRecord([
+                        'token' => $token[0]
+                    ]);
+
+                    $deleteToken = [
+                        'id' => $token['id'],
+                        'token' => "",
+                        'expires' => ""
+                    ];
+
+                    if (self::updateUserToken($deleteToken) ){
+                        $response = $response->withStatus(200);
+                        $message = json_encode([
+                            'message' => "successfully logged out."
+                        ]);
+                    } else{
+                        $response = $response->withStatus(400);
+                        $message = json_encode([
+                            'message' => "error logging out."
+                        ]);
+                    }
+
+                    
+                } catch (PDOException $e) {
+                    $response = $response->withStatus(400);
+                    $message = json_encode([
+                        'message' => "Invalid token provided"
+                    ]);
+                }
+            } else{
+                $response = $response->withStatus(400);
+                $message = json_encode([
+                    'message' => "no token provided"
+                ]);
+            }
+        } catch (PDOException $e) {
+            $response = $response->withStatus(400);
+            $message = json_encode([
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        $response = $response->withHeader('Content-type', 'application/json');
+        return $response->write($message);
+    }
+
     public static function updateUserToken(array $tokenData)
     {
         if (is_array($tokenData)) {
