@@ -10,6 +10,17 @@ class UserManagerController extends PotatoModel
 {
     protected static $table = "users";
 
+    /**
+     * @route POST /auth/register
+     *
+     * @method   /auth/register (POST) Register A new user with
+     * username and password
+     *
+     * @requiredParams none
+     * @queryParams  none
+     *
+     * @return JSON     Message of success or error in registering user
+     */
     public static function createUser($request, $response)
     {
         $data = $request->getParsedBody();
@@ -58,6 +69,16 @@ class UserManagerController extends PotatoModel
         return $response->write($message);
     }
 
+    /**
+     * @route POST /auth/login
+     *
+     * @method   /auth/login (POST) Authenticate and generate a token for the user
+     *
+     * @requiredParams none
+     * @queryParams  none
+     *
+     * @return JSON     Generated token
+     */
     public static function loginUser($request, $response)
     {
         $data = $request->getParsedBody();
@@ -109,6 +130,16 @@ class UserManagerController extends PotatoModel
         return $response->write($message);
     }
 
+    /**
+     * @route GET /auth/logout
+     *
+     * @method   /auth/login (GET) Delete a user token
+     *
+     * @requiredParams none
+     * @queryParams  none
+     *
+     * @return JSON     Message of succes or error in loggging a user out
+     */
     public static function logoutUser($request, $response)
     {
         try {
