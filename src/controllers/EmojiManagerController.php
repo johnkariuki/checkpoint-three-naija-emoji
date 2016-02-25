@@ -1,4 +1,5 @@
 <?php
+
 namespace NaijaEmoji\Manager;
 
 use Potato\Manager\PotatoModel;
@@ -24,7 +25,7 @@ class EmojiManagerController extends PotatoModel
         $response = $response->withStatus(200);
         $response = $response->withHeader('Content-type', 'application/json');
         $message = json_encode([
-        'message' => 'welcome to the naija-emoji RESTful Api'
+            'message' => 'welcome to the naija-emoji RESTful Api'
         ]);
 
         return $response->write($message);
@@ -33,26 +34,22 @@ class EmojiManagerController extends PotatoModel
     public static function getEmojis($request, $response, $args)
     {
         try {
-
             $emojis = self::getAll();
 
             if (count($emojis) > 0) {
-
                 $response = $response->withStatus(200);
             } else {
-
                 $response = $response->withStatus(204);
             }
 
             $message = json_encode([
-            'message' => $emojis
+                'message' => $emojis
             ]);
 
         } catch (PDOException $e) {
-
             $response = $response->withStatus(400);
             $message = json_encode([
-            'message' => $e->getMessage()
+                'message' => $e->getMessage()
             ]);
         }
 
@@ -73,16 +70,14 @@ class EmojiManagerController extends PotatoModel
     public static function getEmoji($request, $response, $args)
     {
         try {
-
             $response = $response->withStatus(200);
             $message = json_encode([
-            'message' => EmojiManagerController::findRecord($args['id'])
+                'message' => EmojiManagerController::findRecord($args['id'])
             ]);
         } catch (PDOException $e) {
-
             $response = $response->withStatus(400);
             $message = json_encode([
-            'message' => $e->getMessage()
+                'message' => $e->getMessage()
             ]);
         }
 
@@ -107,7 +102,6 @@ class EmojiManagerController extends PotatoModel
             if (is_array($data) && count(array_diff(['name', 'char', 'keywords', 'category'], array_keys($data)))) {
                 throw new PDOException("Missing some required fields");
             } else {
-
                 $emoji = new self();
 
                 $emoji->name = $data["name"];
@@ -119,24 +113,21 @@ class EmojiManagerController extends PotatoModel
                 $emoji->created_by = $data["created_by"];
 
                 if ($emoji->save()) {
-
                     $response = $response->withStatus(200);
                     $message = json_encode([
-                    "message" => "Emoji added succesfully."
+                        "message" => "Emoji added succesfully."
                     ]);
                 } else {
-
                     $response = $response->withStatus(304);
                     $message = json_encode([
-                    "message" => "Error adding emoji."
+                        "message" => "Error adding emoji."
                     ]);
                 }
             }
         } catch (PDOException $e) {
-
             $response = $response->withStatus(400);
             $message = json_encode([
-            "message" => $e->getMessage()
+                "message" => $e->getMessage()
             ]);
         }
 
@@ -168,24 +159,21 @@ class EmojiManagerController extends PotatoModel
 
                 $emoji->date_modified = Carbon::now()->toDateTimeString();
                 if ($emoji->save()) {
-
                     $response = $response->withStatus(200);
                     $message = json_encode([
-                    "message" => "Emoji updated succesfully."
+                        "message" => "Emoji updated succesfully."
                     ]);
                 } else {
-
                     $response = $response->withStatus(304);
                     $message = json_encode([
-                    "message" => "Error updating emoji."
+                        "message" => "Error updating emoji."
                     ]);
                 }
             }
         } catch (PDOException $e) {
-
             $response = $response->withStatus(400);
             $message = json_encode([
-            "message" => $e->getMessage()
+                "message" => $e->getMessage()
             ]);
         }
 
@@ -206,27 +194,26 @@ class EmojiManagerController extends PotatoModel
     public static function patchEmoji($request, $response, $args)
     {
         try {
-
             $emoji = self::find($args['id']);
+
             foreach ($request->getParsedBody() as $key => $value) {
                 $emoji->$key = $key === "keywords" ? json_encode(explode(",", $value)) : $value;
             }
-            $emoji->date_modified = Carbon::now()->toDateTimeString();
-            if ($emoji->save()) {
 
+            $emoji->date_modified = Carbon::now()->toDateTimeString();
+
+            if ($emoji->save()) {
                 $response = $response->withStatus(200);
                 $message = json_encode([
                     "message" => "Emoji updated succesfully"
                 ]);
             } else {
-
                 $response = $response->withStatus(304);
                 $message = json_encode([
                     "message" => "Error updating emoji"
                 ]);
             }
         } catch (PDOException $e) {
-
             $response = $response->withStatus(400);
             $message = json_encode([
                 "message" => $e->getMessage()
@@ -251,22 +238,18 @@ class EmojiManagerController extends PotatoModel
     {
         $data = $request->getParsedBody();
         try {
-
             if (self::destroy($args['id'])) {
-
                 $response = $response->withStatus(200);
                 $message = json_encode([
                     "message" => "Emoji deleted succesfully."
                 ]);
             } else {
-
                 $response = $response->withStatus(400);
                 $message = json_encode([
                     "message" => "Error deleting emoji."
                 ]);
             }
         } catch (PDOException $e) {
-
             $response = $response->withStatus(400);
             $message = json_encode([
                 "message" => $e->getMessage()
