@@ -70,10 +70,21 @@ class EmojiManagerController extends PotatoModel
     public static function getEmoji($request, $response, $args)
     {
         try {
-            $response = $response->withStatus(200);
-            $message = json_encode([
-                'message' => EmojiManagerController::findRecord($args['id'])
-            ]);
+            $emoji = EmojiManagerController::findRecord($args['id']);
+
+            if ($emoji) {
+                $response = $response->withStatus(200);
+                $message = json_encode([
+                    'message' => $emoji
+                ]);
+            } else {
+                $response = $response->withStatus(400);
+                $message = json_encode([
+                    'message' => "no emoji found"
+                ]);
+            }
+
+
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
@@ -158,6 +169,7 @@ class EmojiManagerController extends PotatoModel
                 }
 
                 $emoji->date_modified = Carbon::now()->toDateTimeString();
+
                 if ($emoji->save()) {
                     $response = $response->withStatus(200);
                     $message = json_encode([
