@@ -130,3 +130,8 @@ $app->post('/auth/register', function (Request $request, Response $response, arr
 
     return UserManagerController::createUser($request, $response);
 });
+
+$app->post('/auth/login', function (Request $request, Response $response, array $args) {
+
+    return UserManagerController::loginUser($request, $response);
+});
