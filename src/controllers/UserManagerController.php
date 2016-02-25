@@ -1,4 +1,5 @@
 <?php
+
 namespace NaijaEmoji\Manager;
 
 use Potato\Manager\PotatoModel;
@@ -16,16 +17,19 @@ class UserManagerController extends PotatoModel
             if (is_array($data) && count(array_diff(['username', 'password'], array_keys($data)))) {
                 throw new PDOException("Missing some required fields");
             }
-            try {
-                $user = self::findRecord([
-                    'username' => $data['username'],
-                    'password' => hash("sha256", $data['password'])
-                ]);
+
+            $user = self::findRecord([
+                'username' => $data['username'],
+                'password' => hash("sha256", $data['password'])
+            ]);
+
+            if (is_array($user) && ! empty($user)) {
+
                 $response = $response->withStatus(400);
                 $message = json_encode([
                     'message' => "User already exists."
                 ]);
-            } catch (PDOException $e) {
+            } else {
                 // register user
                 $user = new self();
                 $user->username = $data['username'];
@@ -43,8 +47,6 @@ class UserManagerController extends PotatoModel
                     ]);
                 }
             }
-
-
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
@@ -63,13 +65,15 @@ class UserManagerController extends PotatoModel
             if (is_array($data) && count(array_diff(['username', 'password'], array_keys($data)))) {
                 throw new PDOException("Missing some required fields");
             }
-            try {
-                $user = self::findRecord([
-                    'username' => $data['username'],
-                    'password' => hash("sha256", $data['password'])
-                ]);
 
-                $token = hash("sha256", $data['username'] . md5(3.142) . time() . rand(1,1001));
+            $user = self::findRecord([
+                'username' => $data['username'],
+                'password' => hash("sha256", $data['password'])
+            ]);
+
+            if (is_array($user) && ! empty($user)) {
+                $token = hash("sha256", $data['username'] . md5(3.142) . time() . rand(1, 1001));
+
                 $tokenData = [
                     'token' => $token,
                     'expires' => time() + 86400,
@@ -82,13 +86,13 @@ class UserManagerController extends PotatoModel
                         'message' => 'login successful',
                         'token' => $token
                     ]);
-                } else{
+                } else {
                     $response = $response->withStatus(400);
                     $message = json_encode([
                         'message' => 'Error authenticating user.'
                     ]);
                 }
-            } catch (PDOException $e) {
+            } else {
                 $response = $response->withStatus(400);
                 $message = json_encode([
                     'message' => "Invalid login credentials."
@@ -108,39 +112,36 @@ class UserManagerController extends PotatoModel
     public static function logoutUser($request, $response)
     {
         try {
-           $token = $request->getheader("HTTP_TOKEN");
-            if (is_array($token) && count($token) === 1) {
-                try {
-                    $token = self::findRecord([
-                        'token' => $token[0]
-                    ]);
+            if (is_array($request->getHeader("HTTP_TOKEN")) && count($request->getHeader("HTTP_TOKEN")) === 1) {
+                $tokenInfo = self::findRecord([
+                    'token' => $request->getHeader("HTTP_TOKEN")[0]
+                ]);
 
+                if (is_array($tokenInfo) && ! empty($tokenInfo)) {
                     $deleteToken = [
-                        'id' => $token['id'],
+                        'id' => $tokenInfo['id'],
                         'token' => "",
                         'expires' => ""
                     ];
 
-                    if (self::updateUserToken($deleteToken) ){
+                    if (self::updateUserToken($deleteToken)) {
                         $response = $response->withStatus(200);
                         $message = json_encode([
                             'message' => "successfully logged out."
                         ]);
-                    } else{
+                    } else {
                         $response = $response->withStatus(400);
                         $message = json_encode([
                             'message' => "error logging out."
                         ]);
                     }
-
-                    
-                } catch (PDOException $e) {
+                } else {
                     $response = $response->withStatus(400);
                     $message = json_encode([
                         'message' => "Invalid token provided"
                     ]);
                 }
-            } else{
+            } else {
                 $response = $response->withStatus(400);
                 $message = json_encode([
                     'message' => "no token provided"
