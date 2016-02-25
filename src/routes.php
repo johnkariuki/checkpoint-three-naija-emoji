@@ -18,6 +18,7 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \NaijaEmoji\Manager\EmojiManagerController;
+use \NaijaEmoji\Manager\UserManagerController;
 
 /**
  * @route GET /
@@ -123,4 +124,9 @@ $app->patch('/emojis/{id}', function (Request $request, Response $response, arra
 $app->delete('/emojis/{id}', function (Request $request, Response $response, array $args) {
 
     return EmojiManagerController::deleteEmoji($request, $response, $args);
+});
+
+$app->post('/auth/register', function (Request $request, Response $response, array $args) {
+
+    return UserManagerController::createUser($request, $response);
 });
