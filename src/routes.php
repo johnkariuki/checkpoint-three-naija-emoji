@@ -135,3 +135,10 @@ $app->post('/auth/login', function (Request $request, Response $response, array 
 
     return UserManagerController::loginUser($request, $response);
 });
+
+$app->get('/auth/logout', function (Request $request, Response $response) {
+
+    return UserManagerController::logoutUser($request, $response);
+});
+
+
