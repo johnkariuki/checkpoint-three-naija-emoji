@@ -55,4 +55,68 @@ class UserManagerController extends PotatoModel
         $response = $response->withHeader('Content-type', 'application/json');
         return $response->write($message);
     }
+
+    public static function loginUser($request, $response)
+    {
+        $data = $request->getParsedBody();
+        try {
+            if (is_array($data) && count(array_diff(['username', 'password'], array_keys($data)))) {
+                throw new PDOException("Missing some required fields");
+            }
+            try {
+                $user = self::findRecord([
+                    'username' => $data['username'],
+                    'password' => hash("sha256", $data['password'])
+                ]);
+
+                $token = hash("sha256", $data['username'] . md5(3.142) . time() . rand(1,1001));
+                $tokenData = [
+                    'token' => $token,
+                    'expires' => time() + 86400,
+                    'id' => $user[id]
+                ];
+
+                if (self::updateUserToken($tokenData)) {
+                    $response = $response->withStatus(200);
+                    $message = json_encode([
+                        'message' => 'login successful',
+                        'token' => $token
+                    ]);
+                } else{
+                    $response = $response->withStatus(400);
+                    $message = json_encode([
+                        'message' => 'Error authenticating user.'
+                    ]);
+                }
+            } catch (PDOException $e) {
+                $response = $response->withStatus(400);
+                $message = json_encode([
+                    'message' => "Invalid login credentials."
+                ]);
+            }
+        } catch (PDOException $e) {
+            $response = $response->withStatus(400);
+            $message = json_encode([
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        $response = $response->withHeader('Content-type', 'application/json');
+        return $response->write($message);
+    }
+
+    public static function updateUserToken(array $tokenData)
+    {
+        if (is_array($tokenData)) {
+            $updateToken = self::find($tokenData['id']);
+
+            $updateToken->token = $tokenData['token'];
+            $updateToken->expires = $tokenData['expires'];
+            if ($updateToken->save()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
