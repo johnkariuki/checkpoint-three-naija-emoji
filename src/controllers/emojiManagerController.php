@@ -104,7 +104,7 @@ class EmojiManagerController extends PotatoModel
     {
         $data = $request->getParsedBody();
         try {
-            if (count(array_diff(['name', 'char', 'keywords', 'category'], array_keys($data)))) {
+            if (is_array($data) && count(array_diff(['name', 'char', 'keywords', 'category'], array_keys($data)))) {
                 throw new PDOException("Missing some required fields");
             } else {
 

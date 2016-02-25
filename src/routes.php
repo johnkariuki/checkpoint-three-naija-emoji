@@ -31,7 +31,7 @@ use \NaijaEmoji\Manager\EmojiManagerController;
  */
 $app->get('/', function (Request $request, Response $response, array $args) {
 
-     EmojiManagerController::root($request, $response, $args);
+     return EmojiManagerController::root($request, $response, $args);
 });
 
 /**
@@ -46,7 +46,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
  */
 $app->get('/emojis', function (Request $request, Response $response, array $args) {
 
-    EmojiManagerController::getEmojis($request, $response, $args);
+    return EmojiManagerController::getEmojis($request, $response, $args);
 });
 
 /**
@@ -61,7 +61,7 @@ $app->get('/emojis', function (Request $request, Response $response, array $args
  */
 $app->get('/emojis/{id}', function (Request $request, Response $response, array $args) {
 
-    EmojiManagerController::getEmoji($request, $response, $args);
+    return EmojiManagerController::getEmoji($request, $response, $args);
 });
 
 /**
@@ -75,8 +75,8 @@ $app->get('/emojis/{id}', function (Request $request, Response $response, array 
  * @return  JSON data of success or failure in adding new record.
  */
 $app->post('/emojis', function (Request $request, Response $response, array $args) {
-    
-    EmojiManagerController::postEmoji($request, $response, $args);
+
+    return EmojiManagerController::postEmoji($request, $response, $args);
 });
 
 /**
@@ -91,7 +91,7 @@ $app->post('/emojis', function (Request $request, Response $response, array $arg
  */
 $app->put('/emojis/{id}', function (Request $request, Response $response, array $args) {
 
-    EmojiManagerController::putEmoji($request, $response, $args);
+    return EmojiManagerController::putEmoji($request, $response, $args);
 });
 
 /**
@@ -107,7 +107,7 @@ $app->put('/emojis/{id}', function (Request $request, Response $response, array 
 
 $app->patch('/emojis/{id}', function (Request $request, Response $response, array $args) {
 
-    EmojiManagerController::patchEmoji($request, $response, $args);
+    return EmojiManagerController::patchEmoji($request, $response, $args);
 });
 
 /**
@@ -122,5 +122,5 @@ $app->patch('/emojis/{id}', function (Request $request, Response $response, arra
  */
 $app->delete('/emojis/{id}', function (Request $request, Response $response, array $args) {
 
-    EmojiManagerController::deleteEmoji($request, $response, $args);
+    return EmojiManagerController::deleteEmoji($request, $response, $args);
 });
