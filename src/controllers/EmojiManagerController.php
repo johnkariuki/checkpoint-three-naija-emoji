@@ -31,6 +31,16 @@ class EmojiManagerController extends PotatoModel
         return $response->write($message);
     }
 
+    /**
+     * @route GET /emojis/{id}
+     *
+     * @method  emojis/{id}(GET, id) Return a record whose primary key matches provided id.
+     *
+     * @requiredParams id
+     * @queryParams id
+     *
+     * $return JSON     data for a record whose primary key matches provided id.
+     */
     public static function getEmojis($request, $response, $args)
     {
         try {
