@@ -52,9 +52,7 @@ class EmojiManagerController extends PotatoModel
                 $response = $response->withStatus(204);
             }
 
-            $message = json_encode([
-                'message' => $emojis
-            ]);
+            $message = json_encode($emojis);
 
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
@@ -84,9 +82,7 @@ class EmojiManagerController extends PotatoModel
 
             if ($emoji) {
                 $response = $response->withStatus(200);
-                $message = json_encode([
-                    'message' => $emoji
-                ]);
+                $message = json_encode($emoji);
             } else {
                 $response = $response->withStatus(400);
                 $message = json_encode([
