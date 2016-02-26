@@ -18,7 +18,7 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \NaijaEmoji\Manager\EmojiManagerController;
-use \NaijaEmoji\Manager\UserManagerController;
+use \NaijaEmoji\Manager\AuthController;
 
 /**
  * @route GET /
@@ -65,66 +65,68 @@ $app->get('/emojis/{id}', function (Request $request, Response $response, array 
     return EmojiManagerController::getEmoji($request, $response, $args);
 });
 
-/**
- * @route POST /emojis
- *
- * @method  /emojis (POST) Add a new emoji record.
- *
- * @requiredParams none
- * @queryParams none
- *
- * @return  JSON    data of success or failure in adding new record.
- */
-$app->post('/emojis', function (Request $request, Response $response, array $args) {
+$app->group('/emojis', function () use ($app) {
+    /**
+     * @route POST /emojis
+     *
+     * @method  /emojis (POST) Add a new emoji record.
+     *
+     * @requiredParams none
+     * @queryParams none
+     *
+     * @return  JSON    data of success or failure in adding new record.
+     */
+    $app->post('', function (Request $request, Response $response, array $args) {
 
-    return EmojiManagerController::postEmoji($request, $response, $args);
-});
+        return EmojiManagerController::postEmoji($request, $response, $args);
+    });
 
-/**
- * @route PUT /emojis/{id}
- *
- * @method  /emojis/{id} (PUT, id) Update all fields in an emoji record.
- *
- * @requiredParams id
- * @queryParams id
- *
- * @return JSON     data of success or failure of put request activity.
- */
-$app->put('/emojis/{id}', function (Request $request, Response $response, array $args) {
+    /**
+     * @route PUT /emojis/{id}
+     *
+     * @method  /emojis/{id} (PUT, id) Update all fields in an emoji record.
+     *
+     * @requiredParams id
+     * @queryParams id
+     *
+     * @return JSON     data of success or failure of put request activity.
+     */
+    $app->put('/{id}', function (Request $request, Response $response, array $args) {
 
-    return EmojiManagerController::putEmoji($request, $response, $args);
-});
+        return EmojiManagerController::putEmoji($request, $response, $args);
+    });
 
-/**
- * @route PATCH /emojis/{id}
- *
- * @method  /emojis/{id} (PATCH, id) Update specific field in an emoji record.
- *
- * @requiredParams id
- * @queryParams id
- *
- * @return JSON     data of success or failure of put request activity.
- */
+    /**
+     * @route PATCH /emojis/{id}
+     *
+     * @method  /emojis/{id} (PATCH, id) Update specific field in an emoji record.
+     *
+     * @requiredParams id
+     * @queryParams id
+     *
+     * @return JSON     data of success or failure of put request activity.
+     */
 
-$app->patch('/emojis/{id}', function (Request $request, Response $response, array $args) {
+    $app->patch('/{id}', function (Request $request, Response $response, array $args) {
 
-    return EmojiManagerController::patchEmoji($request, $response, $args);
-});
+        return EmojiManagerController::patchEmoji($request, $response, $args);
+    });
 
-/**
- * @route DELETE /emojis/{id}
- *
- * @method  /emojis/{id} (DELETE, id) Delete an emoji record.
- *
- * @requiredParams id
- * @queryParams id
- *
- * @return Delete an emoji record.
- */
-$app->delete('/emojis/{id}', function (Request $request, Response $response, array $args) {
+    /**
+     * @route DELETE /emojis/{id}
+     *
+     * @method  /emojis/{id} (DELETE, id) Delete an emoji record.
+     *
+     * @requiredParams id
+     * @queryParams id
+     *
+     * @return Delete an emoji record.
+     */
+    $app->delete('/{id}', function (Request $request, Response $response, array $args) {
 
-    return EmojiManagerController::deleteEmoji($request, $response, $args);
-});
+        return EmojiManagerController::deleteEmoji($request, $response, $args);
+    });
+})->add($authMiddleware);
 
 /**
  * @route POST /auth/register
@@ -137,10 +139,10 @@ $app->delete('/emojis/{id}', function (Request $request, Response $response, arr
  *
  * @return JSON     Message of success or error in registering user
  */
-$app->post('/auth/register', function (Request $request, Response $response, array $args) {
+    $app->post('/auth/register', function (Request $request, Response $response, array $args) {
 
-    return UserManagerController::createUser($request, $response);
-});
+        return AuthController::createUser($request, $response);
+    });
 
 /**
  * @route POST /auth/login
@@ -152,10 +154,10 @@ $app->post('/auth/register', function (Request $request, Response $response, arr
  *
  * @return JSON     Generated token
  */
-$app->post('/auth/login', function (Request $request, Response $response, array $args) {
+    $app->post('/auth/login', function (Request $request, Response $response, array $args) {
 
-    return UserManagerController::loginUser($request, $response);
-});
+        return AuthController::loginUser($request, $response);
+    });
 
 /**
  * @route GET /auth/logout
@@ -167,7 +169,7 @@ $app->post('/auth/login', function (Request $request, Response $response, array 
  *
  * @return JSON     Message of succes or error in loggging a user out.
  */
-$app->get('/auth/logout', function (Request $request, Response $response) {
+    $app->get('/auth/logout', function (Request $request, Response $response) {
 
-    return UserManagerController::logoutUser($request, $response);
-});
+        return AuthController::logoutUser($request, $response);
+    })->add($authMiddleware);
