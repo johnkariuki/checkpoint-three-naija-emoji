@@ -131,7 +131,9 @@ class EmojiManagerController extends PotatoModel
                 $emoji->category = $data["category"];
                 $emoji->date_created = Carbon::now()->toDateTimeString();
                 $emoji->date_modified = Carbon::now()->toDateTimeString();
-                $emoji->created_by = $data["created_by"];
+                $emoji->created_by = AuthController::findRecord([
+                        "token" => $request->getHeader('HTTP_TOKEN')[0]
+                    ])["username"];
 
                 if ($emoji->save()) {
                     $response = $response->withStatus(200);
