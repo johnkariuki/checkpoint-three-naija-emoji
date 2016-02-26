@@ -143,41 +143,28 @@ class AuthController extends PotatoModel
     public static function logoutUser($request, $response)
     {
         try {
-            if (is_array($request->getHeader("HTTP_TOKEN")) && count($request->getHeader("HTTP_TOKEN")) === 1) {
-                $tokenInfo = self::findRecord([
-                    'token' => $request->getHeader("HTTP_TOKEN")[0]
+            $tokenInfo = self::findRecord([
+                'token' => $request->getHeader("HTTP_TOKEN")[0]
+            ]);
+
+            $deleteToken = [
+                'id' => $tokenInfo['id'],
+                'token' => "",
+                'expires' => ""
+            ];
+
+            if (self::updateUserToken($deleteToken)) {
+                $response = $response->withStatus(200);
+                $message = json_encode([
+                    'message' => "successfully logged out."
                 ]);
-
-                if (is_array($tokenInfo) && ! empty($tokenInfo)) {
-                    $deleteToken = [
-                        'id' => $tokenInfo['id'],
-                        'token' => "",
-                        'expires' => ""
-                    ];
-
-                    if (self::updateUserToken($deleteToken)) {
-                        $response = $response->withStatus(200);
-                        $message = json_encode([
-                            'message' => "successfully logged out."
-                        ]);
-                    } else {
-                        $response = $response->withStatus(400);
-                        $message = json_encode([
-                            'message' => "error logging out."
-                        ]);
-                    }
-                } else {
-                    $response = $response->withStatus(400);
-                    $message = json_encode([
-                        'message' => "Invalid token provided"
-                    ]);
-                }
             } else {
                 $response = $response->withStatus(400);
                 $message = json_encode([
-                    'message' => "no token provided"
+                    'message' => "error logging out."
                 ]);
             }
+
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
