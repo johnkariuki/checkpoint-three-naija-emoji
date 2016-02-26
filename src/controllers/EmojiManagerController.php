@@ -283,4 +283,44 @@ class EmojiManagerController extends PotatoModel
         $response = $response->withHeader('Content-type', 'application/json');
         return $response->write($message);
     }
+
+    /**
+     * @route GET /emojis/{field}/{name}
+     *
+     * @method   [/emojis/{field}/{name}(GET field,name) Search all records
+     * whose fields match a certain name.
+     *
+     * @requiredParams field, name
+     * @queryParams field, name
+     *
+     * @return JSON All records that match the criteria
+     */
+    public static function searchCategory($request, $response, $args)
+    {
+        try {
+            $emojis = EmojiManagerController::findRecords([
+                    $args['field'] => $args['name']
+                ]);
+
+            if ($emojis) {
+                $response = $response->withStatus(200);
+                $message = json_encode([
+                    'message' => $emojis
+                ]);
+            } else {
+                $response = $response->withStatus(400);
+                $message = json_encode([
+                    'message' => "no emojis found whose {$args['field']} field is  {$args['name']}"
+                ]);
+            }
+        } catch (PDOException $e) {
+            $response = $response->withStatus(400);
+            $message = json_encode([
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        $response = $response->withHeader('Content-type', 'application/json');
+        return $response->write($message);
+    }
 }
