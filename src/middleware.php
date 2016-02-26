@@ -53,7 +53,7 @@ $authMiddleware = function (Request $request, Response $response, callable $next
                     'expires' => ''
                 ]);
 
-                $response = $response->withStatus(400);
+                $response = $response->withStatus(401);
                 $response = $response->withHeader('Content-type', 'application/json');
                 $message = json_encode([
                     'message' => 'expired token.'
@@ -62,7 +62,7 @@ $authMiddleware = function (Request $request, Response $response, callable $next
             }
         } else {
             //no user with that token
-            $response = $response->withStatus(400);
+            $response = $response->withStatus(401);
             $response = $response->withHeader('Content-type', 'application/json');
             $message = json_encode([
                 'message' => 'invalid token.'
@@ -71,7 +71,7 @@ $authMiddleware = function (Request $request, Response $response, callable $next
         }
     } else {
         //no or invalid token provided
-        $response = $response->withStatus(400);
+        $response = $response->withStatus(401);
         $response = $response->withHeader('Content-type', 'application/json');
         $message = json_encode([
             'message' => 'No token provided.'
