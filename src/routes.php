@@ -65,6 +65,14 @@ $app->get('/emojis/{id}', function (Request $request, Response $response, array 
     return EmojiManagerController::getEmoji($request, $response, $args);
 });
 
+/**
+ * Group all standard URI groups that require token authentication.
+ *
+ * POST /emojis
+ * PUT /emojis/{id}
+ * PATCH /emojis/{id}
+ * DELETE /emojis/{id}
+ */
 $app->group('/emojis', function () use ($app) {
     /**
      * @route POST /emojis
