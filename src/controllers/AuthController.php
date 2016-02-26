@@ -6,7 +6,7 @@ use Potato\Manager\PotatoModel;
 use Carbon\Carbon;
 use PDOException;
 
-class UserManagerController extends PotatoModel
+class AuthController extends PotatoModel
 {
     protected static $table = "users";
 
