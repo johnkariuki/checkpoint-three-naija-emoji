@@ -11,14 +11,14 @@ class EmojiManagerController extends PotatoModel
     protected static $table = "emojis";
 
     /**
-     * @route GET /emojis
+     * @route GET /
      *
-     * @method  emojis (GET) Return all records of emojis from database.
+     * @method  root (GET) Root URI to Naija emoji API service.
      *
      * @requiredParams none
      * @queryParams none
      *
-     * @return JSON data of all emoji records.
+     * @return JSON     welcome to the naija-emoji RESTful Api.
      */
     public static function root($request, $response, $args = null)
     {
@@ -32,14 +32,14 @@ class EmojiManagerController extends PotatoModel
     }
 
     /**
-     * @route GET /emojis/{id}
+     * @route GET /emojis
      *
-     * @method  emojis/{id}(GET, id) Return a record whose primary key matches provided id.
+     * @method  emojis (GET) Return all records of emojis from database.
      *
-     * @requiredParams id
-     * @queryParams id
+     * @requiredParams none
+     * @queryParams none
      *
-     * $return JSON     data for a record whose primary key matches provided id.
+     * @return JSON     List of all emojis
      */
     public static function getEmojis($request, $response, $args)
     {
