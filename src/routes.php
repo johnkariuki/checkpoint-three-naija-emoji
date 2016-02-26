@@ -181,3 +181,19 @@ $app->get('/', function (Request $request, Response $response, array $args) {
             return EmojiManagerController::deleteEmoji($request, $response, $args);
         });
     })->add($authMiddleware);
+
+    /**
+     * @route GET /emojis/{field}/{name}
+     *
+     * @method   [/emojis/{field}/{name}(GET field,name) Search all records
+     * whose fields match a certain name.
+     *
+     * @requiredParams field, name
+     * @queryParams field, name
+     *
+     * @return JSON All records that match the criteria
+     */
+    $app->get('/emojis/{field}/{name}', function (Request $request, Response $response, array $args) {
+
+        return EmojiManagerController::searchCategory($request, $response, $args);
+    });
