@@ -1,11 +1,35 @@
 <?php
 
 use NaijaEmoji\Manager\AuthController;
+use Psr\Http\Message\RequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 
-// Application middleware
+/**
+ * Application middleware
+ *
+ * Handle trailing slashed on routes
+ */
+$app->add(function (Request $request, Response $response, callable $next) {
+    $uri = $request->getUri();
+    $path = $uri->getPath();
+    if ($path != '/' && substr($path, -1) == '/') {
+        // permanently redirect paths with a trailing slash
+        // to their non-trailing counterpart
+        $uri = $uri->withPath(substr($path, 0, -1));
+        return $response->withRedirect((string)$uri, 301);
+    }
 
-// e.g: $app->add(new \Slim\Csrf\Guard);
-$authMiddleware = function ($request, $response, $next) {
+    return $next($request, $response);
+});
+
+/**
+ * Authentication middleware $authMiddleware
+ *
+ * Handle user token verification
+ *
+ * @var callable
+ */
+$authMiddleware = function (Request $request, Response $response, callable $next) {
 
     if (is_array($request->getHeader("HTTP_TOKEN")) && count($request->getHeader("HTTP_TOKEN")) === 1) {
         $token = $request->getHeader('HTTP_TOKEN');
