@@ -21,7 +21,8 @@
         "monolog/monolog": "^1.17",
         "phpunit/phpunit": "^5.2",
         "nesbot/carbon": "^1.21",
-        "john-kariuki/potato-orm": "^1.0"
+        "john-kariuki/potato-orm": "^1.0",
+        "guzzlehttp/guzzle": "^6.1"
     },
     "require-dev": {},
     "autoload": {
@@ -30,7 +31,9 @@
         }
     },
     "autoload-dev": {
-        "psr-4": {}
+        "psr-4": {
+            "NaijaEmoji\\Tests\\": "tests"
+        }
     },
     "scripts": {
         "test": "phpunit"
