@@ -21,7 +21,7 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
      *
      * @var string
      */
-    protected static $url = 'http://naijaemoji.local/emojis';
+    protected static $url = 'https://naijaemoji-staging.herokuapp.com';
 
     /**
      * GuzzleHTTP client object.
