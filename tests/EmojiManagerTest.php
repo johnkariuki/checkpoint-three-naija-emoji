@@ -245,6 +245,12 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
          $this->assertArrayHasKey('date_created', $emojis);
     }
 
+    /**
+     * Asert that GET /emojis{field}{name} returns  JSON object with all emojis
+     * that meet a certain criteria.
+     *
+     * @return void
+     */
     public function testGetEmojiByField()
     {
         $response = self::$client->get('/emojis/category/person');

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1456786285">
-  <project timestamp="1456786285">
+<coverage generated="1456786789">
+  <project timestamp="1456786789">
     <package name="NaijaEmoji\Manager">
       <file name="/Users/johnkariuki/projects/dev/php/naijaemoji/src/controllers/AuthController.php">
         <class name="AuthController" namespace="NaijaEmoji\Manager">
@@ -139,7 +139,7 @@
       </file>
       <file name="/Users/johnkariuki/projects/dev/php/naijaemoji/src/controllers/EmojiManagerController.php">
         <class name="EmojiManagerController" namespace="NaijaEmoji\Manager">
-          <metrics methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="138" coveredstatements="0" elements="146" coveredelements="0"/>
+          <metrics methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="137" coveredstatements="0" elements="145" coveredelements="0"/>
         </class>
         <line num="23" type="method" name="root" crap="2" count="0"/>
         <line num="25" type="stmt" count="0"/>
@@ -274,20 +274,19 @@
         <line num="301" type="stmt" count="0"/>
         <line num="302" type="stmt" count="0"/>
         <line num="303" type="stmt" count="0"/>
+        <line num="304" type="stmt" count="0"/>
         <line num="305" type="stmt" count="0"/>
         <line num="306" type="stmt" count="0"/>
         <line num="307" type="stmt" count="0"/>
         <line num="308" type="stmt" count="0"/>
-        <line num="309" type="stmt" count="0"/>
         <line num="310" type="stmt" count="0"/>
+        <line num="311" type="stmt" count="0"/>
         <line num="312" type="stmt" count="0"/>
         <line num="313" type="stmt" count="0"/>
         <line num="314" type="stmt" count="0"/>
-        <line num="315" type="stmt" count="0"/>
-        <line num="316" type="stmt" count="0"/>
-        <line num="319" type="stmt" count="0"/>
-        <line num="320" type="stmt" count="0"/>
-        <metrics loc="322" ncloc="241" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="138" coveredstatements="0" elements="146" coveredelements="0"/>
+        <line num="317" type="stmt" count="0"/>
+        <line num="318" type="stmt" count="0"/>
+        <metrics loc="320" ncloc="239" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="137" coveredstatements="0" elements="145" coveredelements="0"/>
       </file>
     </package>
     <file name="/Users/johnkariuki/projects/dev/php/naijaemoji/src/dependencies.php">
@@ -395,6 +394,6 @@
       <line num="17" type="stmt" count="0"/>
       <metrics loc="17" ncloc="11" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="0" elements="12" coveredelements="0"/>
     </file>
-    <metrics files="6" loc="833" ncloc="546" classes="2" methods="12" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="356" coveredstatements="0" elements="368" coveredelements="0"/>
+    <metrics files="6" loc="831" ncloc="544" classes="2" methods="12" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="355" coveredstatements="0" elements="367" coveredelements="0"/>
   </project>
 </coverage>
