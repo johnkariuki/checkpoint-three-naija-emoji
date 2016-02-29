@@ -223,6 +223,29 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Assert that GET /emojis{id} returns a JSON object that holds one
+     * emoji.
+     *
+     * @return void
+     */
+    public function testgetOneEmoji()
+    {
+        $response = self::$client->get('/emojis/' . self::$data['id']);
+
+         $this->assertEquals(200, $response->getStatusCode());
+         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+
+         $emojis = json_decode($response->getBody(), true);
+         $this->assertTrue(is_array($emojis));
+
+         self::$data['id'] = $emojis['id'];
+
+         $this->assertArrayHasKey('name', $emojis);
+         $this->assertArrayHasKey('char', $emojis);
+         $this->assertArrayHasKey('date_created', $emojis);
+    }
+
+    /**
      * Create the emojis table.
      *
      * @return void
