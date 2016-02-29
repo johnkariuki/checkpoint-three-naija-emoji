@@ -132,7 +132,7 @@ class EmojiManagerController extends PotatoModel
                     ])["username"];
 
                 if ($emoji->save()) {
-                    $response = $response->withStatus(200);
+                    $response = $response->withStatus(201);
                     $message = json_encode([
                         "message" => "Emoji added succesfully."
                     ]);
@@ -179,7 +179,7 @@ class EmojiManagerController extends PotatoModel
                 $emoji->date_modified = Carbon::now()->toDateTimeString();
 
                 if ($emoji->save()) {
-                    $response = $response->withStatus(200);
+                    $response = $response->withStatus(201);
                     $message = json_encode([
                         "message" => "Emoji updated succesfully."
                     ]);
@@ -223,7 +223,7 @@ class EmojiManagerController extends PotatoModel
             $emoji->date_modified = Carbon::now()->toDateTimeString();
 
             if ($emoji->save()) {
-                $response = $response->withStatus(200);
+                $response = $response->withStatus(201);
                 $message = json_encode([
                     "message" => "Emoji updated succesfully"
                 ]);
