@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1456785816">
-  <project timestamp="1456785816">
+<coverage generated="1456786285">
+  <project timestamp="1456786285">
     <package name="NaijaEmoji\Manager">
       <file name="/Users/johnkariuki/projects/dev/php/naijaemoji/src/controllers/AuthController.php">
         <class name="AuthController" namespace="NaijaEmoji\Manager">

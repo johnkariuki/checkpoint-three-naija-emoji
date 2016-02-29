@@ -245,6 +245,20 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
          $this->assertArrayHasKey('date_created', $emojis);
     }
 
+    public function testGetEmojiByField()
+    {
+        $response = self::$client->get('/emojis/category/person');
+         $this->assertEquals(200, $response->getStatusCode());
+         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+
+
+         $emojis = json_decode($response->getBody(), true);
+         $this->assertTrue(is_array($emojis));
+         $this->assertArrayHasKey('name', $emojis[0]);
+         $this->assertArrayHasKey('char', $emojis[0]);
+         $this->assertArrayHasKey('date_created', $emojis[0]);
+    }
+
     /**
      * Create the emojis table.
      *
