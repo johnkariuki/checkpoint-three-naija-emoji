@@ -188,7 +188,7 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
             'form_params' => self::$data['newEmoji']
         ]);
 
-         $this->assertEquals(200, $response->getStatusCode());
+         $this->assertEquals(201, $response->getStatusCode());
          $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
          $this->assertEquals('Emoji added succesfully.', json_decode($response->getBody())->message);
 
