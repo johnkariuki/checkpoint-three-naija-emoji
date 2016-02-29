@@ -9,7 +9,7 @@ use PHPUnit_Framework_TestCase;
 use GuzzleHttp\Client;
 use Faker\Factory;
 
-class EmojiManagerTest extends PHPUnit_Framework_TestCase
+class AuthControllerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * Contains a PDO connection object returned by
@@ -92,6 +92,102 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
         $this->assertEquals('{"message":"welcome to the naija-emoji RESTful Api"}', $response->getBody());
+    }
+
+    /**
+     * Assert that a user is registered succesfully in the database.
+     *
+     * assert that a 201 Create statuscode and success message are
+     * returned.
+     *
+     * Assert that record with that username is in the database.
+     *
+     * @return void
+     */
+    public function testRegisterUser()
+    {
+        $user = [
+            'username' => self::$data['username'],
+            'password' => '123456'
+        ];
+
+        $response = self::$client->post('/auth/register', [
+            'form_params' => $user
+        ]);
+
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertEquals('{"message":"User successfully registered."}', $response->getBody());
+        $this->assertEquals(1, count(AuthController::findRecord([
+            'username' => self::$data['username']
+            ])));
+
+    }
+
+    /**
+     * Assert that a username that is already registered will throw
+     * and excception.
+     *
+     * @expectedException GuzzleHttp\Exception\ClientException
+     */
+    public function testNoDuplicateUser()
+    {
+        $user = [
+            'username' => self::$data['username'],
+            'password' => '123456'
+        ];
+
+        $response = self::$client->post('/auth/register', [
+            'form_params' => $user
+        ]);
+    }
+
+    /**
+     * Assert that an unregistered user will throw an exception
+     * on login attempt.
+     *
+     * @expectedException GuzzleHttp\Exception\ClientException
+     */
+    public function testUnRegisteredUser()
+    {
+        $badUser = [
+            'username' => "johndoeslimguy",
+            'password' => '123456'
+        ];
+        $response = self::$client->post('/auth/login', [
+            'form_params' => $badUser
+        ]);
+    }
+
+    /**
+     * assert that testAuthRegisteredUser authenticates a user
+     * and returns a success message and a token.
+     *
+     * Assert that a 200 status code is given and that the
+     * user is in the database
+     *
+     * @return void
+     */
+    public function testAuthRegisteredUser()
+    {
+         $awesomeUser = [
+            'username' => self::$data['username'],
+            'password' => '123456'
+         ];
+
+         $response = self::$client->post('/auth/login', [
+            'form_params' => $awesomeUser
+         ]);
+
+         $this->assertEquals(200, $response->getStatusCode());
+         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+
+         $this->assertEquals('login successful', json_decode($response->getBody())->message);
+         $this->assertEquals('string', gettype(json_decode($response->getBody())->token));
+
+         $this->assertEquals(1, count(AuthController::findRecord([
+            'username' => self::$data['username']
+            ])));
     }
 
     /**
