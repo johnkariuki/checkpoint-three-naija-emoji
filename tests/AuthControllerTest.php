@@ -52,9 +52,6 @@ class AuthControllerTest extends PHPUnit_Framework_TestCase
      * Create persitent database connection to remain
      * until all tests run.
      *
-     * Run the createUsersTable method.
-     * Run the createEmojisTable method.
-     *
      * Create a faker object and add a username
      * to the data array.
      *
@@ -63,8 +60,6 @@ class AuthControllerTest extends PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         self::$connection = DatabaseConnection::connect();
-        self::createUsersTable();
-        self::createEmojisTable();
 
         self::$faker = Factory::create();
         self::$data['username'] = self::$faker->userName;
@@ -223,45 +218,6 @@ class AuthControllerTest extends PHPUnit_Framework_TestCase
          $this->assertEquals(200, $response->getStatusCode());
          $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
          $this->assertEquals('successfully logged out.', json_decode($response->getBody())->message);
-    }
-
-    /**
-     * Create the emojis table.
-     *
-     * @return void
-     */
-    public static function createEmojisTable()
-    {
-        $sqlQuery = 'CREATE TABLE IF NOT EXISTS `emojis` (
-                    `id`    INTEGER PRIMARY KEY AUTOINCREMENT,
-                    `name`  TEXT,
-                    `char`  TEXT,
-                    `keywords`  TEXT,
-                    `category`  TEXT,
-                    `date_created`  TEXT,
-                    `date_modified` TEXT,
-                    `created_by`    TEXT
-                )';
-
-        self::$connection->exec($sqlQuery);
-    }
-
-    /**
-     * Create the users table.
-     *
-     * @return void
-     */
-    public static function createUsersTable()
-    {
-        $sqlQuery = 'CREATE TABLE IF NOT EXISTS "users" (
-                `id`    INTEGER PRIMARY KEY AUTOINCREMENT,
-                `username`  TEXT,
-                `password`  TEXT,
-                `token` TEXT,
-                `expires`   TEXT
-            )';
-
-        self::$connection->exec($sqlQuery);
     }
 
     /**
