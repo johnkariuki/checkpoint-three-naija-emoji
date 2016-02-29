@@ -183,11 +183,46 @@ class AuthControllerTest extends PHPUnit_Framework_TestCase
          $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
 
          $this->assertEquals('login successful', json_decode($response->getBody())->message);
-         $this->assertEquals('string', gettype(json_decode($response->getBody())->token));
+
+         self::$data['token'] = json_decode($response->getBody())->token;
+         $this->assertEquals('string', gettype(self::$data['token']));
 
          $this->assertEquals(1, count(AuthController::findRecord([
             'username' => self::$data['username']
             ])));
+    }
+
+    /**
+     * Test a logout attemtpt without an emoji API token
+     *
+     *  @expectedException GuzzleHttp\Exception\ClientException
+     *
+     * @return void
+     */
+    public function testunAuthlogout()
+    {
+        $response = self::$client->get('/auth/logout');
+    }
+
+    /**
+     * Assert that logout with a valid emoji API token
+     * returns JSON with status code 200.
+     *
+     * Assert that succesfully logout message is returned.
+     *
+     * @return void
+     */
+    public function testAuthLogout()
+    {
+         $response = self::$client->get('/auth/logout', [
+            'headers' => [
+                'token' => self::$data['token']
+            ]
+         ]);
+
+         $this->assertEquals(200, $response->getStatusCode());
+         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+         $this->assertEquals('successfully logged out.', json_decode($response->getBody())->message);
     }
 
     /**
