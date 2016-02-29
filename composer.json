@@ -22,7 +22,8 @@
         "phpunit/phpunit": "^5.2",
         "nesbot/carbon": "^1.21",
         "john-kariuki/potato-orm": "^1.0",
-        "guzzlehttp/guzzle": "^6.1"
+        "guzzlehttp/guzzle": "^6.1",
+        "fzaninotto/faker": "^1.5"
     },
     "require-dev": {},
     "autoload": {

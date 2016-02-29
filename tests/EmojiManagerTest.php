@@ -3,8 +3,11 @@
 namespace NaijaEmoji\Tests;
 
 use Potato\Database\DatabaseConnection;
+use NaijaEmoji\Manager\AuthController;
+use NaijaEmoji\Manager\EmojiManagerController;
 use PHPUnit_Framework_TestCase;
 use GuzzleHttp\Client;
+use Faker\Factory;
 
 class EmojiManagerTest extends PHPUnit_Framework_TestCase
 {
@@ -24,6 +27,21 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     protected static $url = 'https://naijaemoji-staging.herokuapp.com';
 
     /**
+     * Holds A Faker/Generator Instance.
+     *
+     * @var Object
+     */
+    protected static $faker;
+
+    /**
+     * Array of al data needed between one or more
+     * test methods.
+     *
+     * @var array
+     */
+    protected static $data = [];
+
+    /**
      * GuzzleHTTP client object.
      *
      * @var Object
@@ -37,6 +55,9 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
      * Run the createUsersTable method.
      * Run the createEmojisTable method.
      *
+     * Create a faker object and add a username
+     * to the data array.
+     *
      *  create the guzzleHTTP client object.
      */
     public static function setUpBeforeClass()
@@ -44,6 +65,9 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
         self::$connection = DatabaseConnection::connect();
         self::createUsersTable();
         self::createEmojisTable();
+
+        self::$faker = Factory::create();
+        self::$data['username'] = self::$faker->userName;
 
         self::$client = new Client([
               'base_uri' => self::$url
@@ -71,14 +95,57 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Assert that a user is registered succesfully in the database.
+     *
+     * assert that a 201 Create statuscode and success message are
+     * returned.
+     *
+     * Assert that record with that username is in the database.
+     *
+     * @return void
+     */
+    public function testRegisterUser()
+    {
+        $user = [
+            'username' => self::$data['username'],
+            'password' => '123456'
+        ];
+
+        $response = self::$client->post('/auth/register', [
+            'form_params' => $user
+        ]);
+
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertEquals('{"message":"User successfully registered."}', $response->getBody());
+        $this->assertEquals(1, count(AuthController::findRecord([
+            'username' => self::$data['username']
+            ])));
+
+    }
+
+    /**
+     * @expectedException GuzzleHttp\Exception\ClientException
+     */
+    public function testNoDuplicateUser()
+    {
+        $user = [
+            'username' => self::$data['username'],
+            'password' => '123456'
+        ];
+
+        $response = self::$client->post('/auth/register', [
+            'form_params' => $user
+        ]);
+    }
+
+    /**
      * Create the emojis table.
      *
      * @return void
      */
     public static function createEmojisTable()
     {
-        self::$connection = DatabaseConnection::connect();
-
         $sqlQuery = 'CREATE TABLE IF NOT EXISTS `emojis` (
                     `id`    INTEGER PRIMARY KEY AUTOINCREMENT,
                     `name`  TEXT,
@@ -100,8 +167,6 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
      */
     public static function createUsersTable()
     {
-        self::$connection = DatabaseConnection::connect();
-
         $sqlQuery = 'CREATE TABLE IF NOT EXISTS "users" (
                 `id`    INTEGER PRIMARY KEY AUTOINCREMENT,
                 `username`  TEXT,
@@ -122,9 +187,6 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
      */
     public static function tearDownAfterClass()
     {
-        self::$connection->exec('DROP TABLE IF EXISTS emojis');
-        self::$connection->exec('DROP TABLE IF EXISTS users');
-
-        self::$connection = null;
+        self::$connection->query('DELETE FROM users WHERE id != 1');
     }
 }
