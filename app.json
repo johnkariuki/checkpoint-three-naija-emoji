@@ -1,0 +1,34 @@
+{
+  "name": "checkpoint-three-naija-emoji",
+  "description": "A RESTful emoji service that lets you add, find, update and delete emojis with authentication\"",
+  "scripts": {
+  },
+  "env": {
+    "DB_DRIVER": {
+      "required": true
+    },
+    "DB_HOST": {
+      "required": true
+    },
+    "DB_NAME": {
+      "required": true
+    },
+    "DB_PASSWORD": {
+      "required": true
+    },
+    "DB_PORT": {
+      "required": true
+    },
+    "DB_USERNAME": {
+      "required": true
+    }
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+    {
+      "url": "urn:buildpack:heroku/php"
+    }
+  ]
+}
