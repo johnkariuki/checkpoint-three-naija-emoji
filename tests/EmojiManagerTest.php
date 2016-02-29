@@ -246,6 +246,19 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Assert that error is thrown when a non existent Emoji
+     * is searched.
+     *
+     * @expectedException GuzzleHttp\Exception\ClientException
+     *
+     * @return void
+     */
+    public function testGetNonExistentEmoji()
+    {
+        self::$client->get('/emojis/314210001');
+    }
+
+    /**
      * Asert that GET /emojis{field}{name} returns  JSON object with all emojis
      * that meet a certain criteria.
      *
