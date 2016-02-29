@@ -67,7 +67,15 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
         self::createEmojisTable();
 
         self::$faker = Factory::create();
+
         self::$data['username'] = self::$faker->userName;
+
+        self::$data['newEmoji'] = [
+            'name' => 'innocent',
+            'char' => '😇 ',
+            'keywords' => 'happy, holy, angel, sweet, awww, innocent',
+            'category' => 'person'
+        ];
 
         self::$client = new Client([
               'base_uri' => self::$url
@@ -92,6 +100,101 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
         $this->assertEquals('{"message":"welcome to the naija-emoji RESTful Api"}', $response->getBody());
+    }
+    /**
+     *Assert that a creating a new emoji while unauthenticated
+     * throws an error.(returns 400 bad request)
+     *
+     * @expectedException GuzzleHttp\Exception\ClientException
+     *
+     * @return void
+     */
+    public function testUnAuthAddEmoji()
+    {
+        $response = self::$client->post('/emojis', [
+            'form_params' => self::$data['newEmoji']
+        ]);
+    }
+
+    /**
+     * Assert that trying to post an emoji with incomplete details
+     * throws an exception
+     *
+     * @expectedException GuzzleHttp\Exception\ClientException
+     *
+     * @return void
+     */
+    public function testRequiredEmojiFields()
+    {
+        $userName = self::$faker->userName;
+        $user = [
+            'username' => $userName,
+            'password' => '123456'
+        ];
+
+        self::$client->post('/auth/register', [
+            'form_params' => $user
+        ]);
+
+        $response = self::$client->post('/auth/login', [
+            'form_params' => $user
+         ]);
+
+        $token = json_decode($response->getBody())->token;
+
+        $response = self::$client->post('/emojis', [
+            'headers' => [
+                'token' => $token
+            ],
+            'form_params' => [
+                'name' => 'awesomeIncompleteEmoji'
+            ]
+        ]);
+    }
+
+    /**
+     * Assert that a registered and authenticated user can add
+     * a new emoji
+     *
+     * @return void
+     */
+    public function testAuthAddEmoji()
+    {
+        $userName = self::$faker->userName;
+        $user = [
+            'username' => $userName,
+            'password' => '123456'
+        ];
+
+        self::$client->post('/auth/register', [
+            'form_params' => $user
+        ]);
+
+        $response = self::$client->post('/auth/login', [
+            'form_params' => $user
+         ]);
+
+        $token = json_decode($response->getBody())->token;
+
+        //no of emojis
+        $emojis = count(EmojiManagerController::findRecord([
+            'name' => 'innocent'
+        ]));
+
+        $response = self::$client->post('/emojis', [
+            'headers' => [
+                'token' => $token
+            ],
+            'form_params' => self::$data['newEmoji']
+        ]);
+
+         $this->assertEquals(200, $response->getStatusCode());
+         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+         $this->assertEquals('Emoji added succesfully.', json_decode($response->getBody())->message);
+
+         $this->assertEquals($emojis++, count(EmojiManagerController::findRecord([
+            'name' => 'innocent'
+         ])));
     }
 
     /**
