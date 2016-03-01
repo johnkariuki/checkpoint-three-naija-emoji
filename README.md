@@ -9,7 +9,7 @@ A RESTful emoji service that lets you add, find, update and delete emojis with a
 
 **TIA**
 
-###Api Root
+###API Root
 
 The Naija Emoji APi is accesible throgh the url 
 ```bash
