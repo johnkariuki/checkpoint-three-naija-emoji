@@ -6,3 +6,4 @@ Vendor/john-kariuki/potato-orm/.env
 .env
 /build/*
 naijaemoji.db
+build
