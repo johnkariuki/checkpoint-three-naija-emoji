@@ -1,6 +1,11 @@
 # Naija Emoji RESTful API 😎
-
+  
 A RESTful emoji service that lets you add, find, update and delete emojis with authentication
+
+[![Build Status](https://travis-ci.org/andela-jkariuki/checkpoint-three-naija-emoji.svg?branch=master)](https://travis-ci.org/andela-jkariuki/checkpoint-three-naija-emoji)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/andela-jkariuki/checkpoint-three-naija-emoji/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/andela-jkariuki/checkpoint-three-naija-emoji/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/andela-jkariuki/checkpoint-three-naija-emoji/badges/build.png?b=master)](https://scrutinizer-ci.com/g/andela-jkariuki/checkpoint-three-naija-emoji/build-status/master)
+[![Software License][ico-license]](https://github.com/andela-jkariuki/checkpoint-three-naija-emoji)
 
 **TIA**
 
@@ -253,3 +258,5 @@ Copyright (c) 2016 John kariuki <john.kariuki@andela.com>
 > LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 > OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 > THE SOFTWARE.
+
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
