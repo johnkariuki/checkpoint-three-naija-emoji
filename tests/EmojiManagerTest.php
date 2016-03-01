@@ -226,17 +226,17 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     {
         $response = self::$client->get('/emojis/' . self::$data['id']);
 
-         $this->assertEquals(200, $response->getStatusCode());
-         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
 
-         $emojis = json_decode($response->getBody(), true);
-         $this->assertTrue(is_array($emojis));
+        $emojis = json_decode($response->getBody(), true);
+        $this->assertTrue(is_array($emojis));
 
-         self::$data['id'] = $emojis['id'];
+        self::$data['id'] = $emojis['id'];
 
-         $this->assertArrayHasKey('name', $emojis);
-         $this->assertArrayHasKey('char', $emojis);
-         $this->assertArrayHasKey('date_created', $emojis);
+        $this->assertArrayHasKey('name', $emojis);
+        $this->assertArrayHasKey('char', $emojis);
+        $this->assertArrayHasKey('date_created', $emojis);
     }
 
     /**
@@ -261,15 +261,15 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     public function testGetEmojiByField()
     {
         $response = self::$client->get('/emojis/category/person');
-         $this->assertEquals(200, $response->getStatusCode());
-         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
 
 
-         $emojis = json_decode($response->getBody(), true);
-         $this->assertTrue(is_array($emojis));
-         $this->assertArrayHasKey('name', $emojis[0]);
-         $this->assertArrayHasKey('char', $emojis[0]);
-         $this->assertArrayHasKey('date_created', $emojis[0]);
+        $emojis = json_decode($response->getBody(), true);
+        $this->assertTrue(is_array($emojis));
+        $this->assertArrayHasKey('name', $emojis[0]);
+        $this->assertArrayHasKey('char', $emojis[0]);
+        $this->assertArrayHasKey('date_created', $emojis[0]);
     }
 
     /**
@@ -309,11 +309,11 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
             ]
         ]);
 
-         $this->assertEquals(201, $response->getStatusCode());
-         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
-         $this->assertEquals('Emoji updated succesfully.', json_decode($response->getBody())->message);
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertEquals('Emoji updated succesfully.', json_decode($response->getBody())->message);
 
-         $response = self::$client->patch('/emojis/'. self::$data['id'], [
+        $response = self::$client->patch('/emojis/'. self::$data['id'], [
             'headers' => [
                 'token' => $token
             ],
@@ -322,9 +322,9 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
             ]
          ]);
 
-         $this->assertEquals(201, $response->getStatusCode());
-         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
-         $this->assertEquals('Emoji updated succesfully', json_decode($response->getBody())->message);
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertEquals('Emoji updated succesfully', json_decode($response->getBody())->message);
     }
 
     /**
@@ -369,6 +369,6 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
      */
     public static function tearDownAfterClass()
     {
-        self::$connection->query('DELETE FROM users WHERE id != 1');
+        self::$connection = null;
     }
 }
