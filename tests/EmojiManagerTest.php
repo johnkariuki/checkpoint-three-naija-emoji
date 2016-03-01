@@ -371,7 +371,7 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
      */
     public static function createEmojisTable()
     {
-        $sqlQuery = 'CREATE TABLE IF NOT EXISTS `emojis` (
+        $sqlQuery = 'CREATE TABLE IF NOT EXISTS "emojis" (
                     `id`    INTEGER PRIMARY KEY AUTOINCREMENT,
                     `name`  TEXT,
                     `char`  TEXT,
