@@ -35,7 +35,6 @@ class AuthController extends PotatoModel
             ]);
 
             if (is_array($user) && ! empty($user)) {
-
                 $response = $response->withStatus(400);
                 $message = json_encode([
                     'message' => "User already exists."

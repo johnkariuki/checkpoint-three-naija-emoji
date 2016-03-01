@@ -60,6 +60,8 @@ class AuthControllerTest extends PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         self::$connection = DatabaseConnection::connect();
+        //self::createEmojisTable();
+        //self::createUsersTable();
 
         self::$faker = Factory::create();
         self::$data['username'] = self::$faker->userName;
@@ -113,10 +115,6 @@ class AuthControllerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(201, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
         $this->assertEquals('{"message":"User successfully registered."}', $response->getBody());
-        $this->assertEquals(1, count(AuthController::findRecord([
-            'username' => self::$data['username']
-            ])));
-
     }
 
     /**
@@ -181,10 +179,6 @@ class AuthControllerTest extends PHPUnit_Framework_TestCase
 
          self::$data['token'] = json_decode($response->getBody())->token;
          $this->assertEquals('string', gettype(self::$data['token']));
-
-         $this->assertEquals(1, count(AuthController::findRecord([
-            'username' => self::$data['username']
-            ])));
     }
 
     /**
