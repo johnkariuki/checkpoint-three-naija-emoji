@@ -205,6 +205,32 @@ A failed delete returns:
 }
 ```
 
+###Search By field GET /emojis/{field}/{name}
+Route: `https://naijaemoji-staging.herokuapp.com/emojis/created_by/oscar`
+
+Non empty emojis array found returns
+```json
+[
+  {
+    "id": 87,
+    "name": "sun_glasses",
+    "char": "😎",
+    "keywords": "[\"sun\",\"glasses\",\" cool\"]",
+    "category": "person",
+    "date_created": "2016-03-01 18:09:10",
+    "date_modified": "2016-03-01 18:09:10",
+    "created_by": "oscar"
+  }
+]
+```
+
+Empty JSON array returns
+```json
+{
+  "message": "no emojis found whose created_by field is  john"
+}
+```
+
 ## Contributing
 
 Contributions are **welcome** and will be fully **credited**.
