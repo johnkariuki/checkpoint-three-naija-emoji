@@ -115,7 +115,7 @@ class AuthControllerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('{"message":"User successfully registered."}', $response->getBody());
         $this->assertEquals(1, count(AuthController::findRecord([
             'username' => self::$data['username']
-            ])));
+        ])));
 
     }
 
