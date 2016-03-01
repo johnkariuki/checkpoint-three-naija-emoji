@@ -1,0 +1,18 @@
+# Required to run your project under the correct environment.
+language: php
+
+php:
+ - 5.6
+
+# Commands to be run before your environment runs.
+before_script:
+  - composer self-update
+  - composer install --prefer-source --no-interaction --dev
+  - composer require satooshi/php-coveralls
+  - mkdir -p build/logs
+
+ # Commands you want to run that will verify your build.
+script: phpunit
+
+after_script:
+ - php vendor/bin/coveralls -v
