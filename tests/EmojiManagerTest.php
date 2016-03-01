@@ -60,6 +60,9 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         self::$connection = DatabaseConnection::connect();
+        self::createEmojisTable();
+        self::createUsersTable();
+
         self::$faker = Factory::create();
 
         self::$data['username'] = self::$faker->userName;
@@ -226,17 +229,17 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     {
         $response = self::$client->get('/emojis/' . self::$data['id']);
 
-         $this->assertEquals(200, $response->getStatusCode());
-         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
 
-         $emojis = json_decode($response->getBody(), true);
-         $this->assertTrue(is_array($emojis));
+        $emojis = json_decode($response->getBody(), true);
+        $this->assertTrue(is_array($emojis));
 
-         self::$data['id'] = $emojis['id'];
+        self::$data['id'] = $emojis['id'];
 
-         $this->assertArrayHasKey('name', $emojis);
-         $this->assertArrayHasKey('char', $emojis);
-         $this->assertArrayHasKey('date_created', $emojis);
+        $this->assertArrayHasKey('name', $emojis);
+        $this->assertArrayHasKey('char', $emojis);
+        $this->assertArrayHasKey('date_created', $emojis);
     }
 
     /**
@@ -261,15 +264,15 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     public function testGetEmojiByField()
     {
         $response = self::$client->get('/emojis/category/person');
-         $this->assertEquals(200, $response->getStatusCode());
-         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
 
 
-         $emojis = json_decode($response->getBody(), true);
-         $this->assertTrue(is_array($emojis));
-         $this->assertArrayHasKey('name', $emojis[0]);
-         $this->assertArrayHasKey('char', $emojis[0]);
-         $this->assertArrayHasKey('date_created', $emojis[0]);
+        $emojis = json_decode($response->getBody(), true);
+        $this->assertTrue(is_array($emojis));
+        $this->assertArrayHasKey('name', $emojis[0]);
+        $this->assertArrayHasKey('char', $emojis[0]);
+        $this->assertArrayHasKey('date_created', $emojis[0]);
     }
 
     /**
@@ -309,11 +312,11 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
             ]
         ]);
 
-         $this->assertEquals(201, $response->getStatusCode());
-         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
-         $this->assertEquals('Emoji updated succesfully.', json_decode($response->getBody())->message);
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertEquals('Emoji updated succesfully.', json_decode($response->getBody())->message);
 
-         $response = self::$client->patch('/emojis/'. self::$data['id'], [
+        $response = self::$client->patch('/emojis/'. self::$data['id'], [
             'headers' => [
                 'token' => $token
             ],
@@ -322,9 +325,9 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
             ]
          ]);
 
-         $this->assertEquals(201, $response->getStatusCode());
-         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
-         $this->assertEquals('Emoji updated succesfully', json_decode($response->getBody())->message);
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertEquals('Emoji updated succesfully', json_decode($response->getBody())->message);
     }
 
     /**
@@ -362,6 +365,45 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Create the emojis table.
+     *
+     * @return void
+     */
+    public static function createEmojisTable()
+    {
+        $sqlQuery = 'CREATE TABLE IF NOT EXISTS `emojis` (
+                    `id`    INTEGER PRIMARY KEY AUTOINCREMENT,
+                    `name`  TEXT,
+                    `char`  TEXT,
+                    `keywords`  TEXT,
+                    `category`  TEXT,
+                    `date_created`  TEXT,
+                    `date_modified` TEXT,
+                    `created_by`    TEXT
+                )';
+
+        self::$connection->exec($sqlQuery);
+    }
+
+    /**
+     * Create the users table.
+     *
+     * @return void
+     */
+    public static function createUsersTable()
+    {
+        $sqlQuery = 'CREATE TABLE IF NOT EXISTS "users" (
+                `id`    INTEGER PRIMARY KEY AUTOINCREMENT,
+                `username`  TEXT,
+                `password`  TEXT,
+                `token` TEXT,
+                `expires`   TEXT
+            )';
+
+        self::$connection->exec($sqlQuery);
+    }
+
+    /**
      *
      * close PDO Database connection.
      *
@@ -369,6 +411,6 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
      */
     public static function tearDownAfterClass()
     {
-        self::$connection->query('DELETE FROM users WHERE id != 1');
+        self::$connection = null;
     }
 }
