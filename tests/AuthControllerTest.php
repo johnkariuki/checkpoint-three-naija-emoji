@@ -60,8 +60,8 @@ class AuthControllerTest extends PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         self::$connection = DatabaseConnection::connect();
-        self::createEmojisTable();
-        self::createUsersTable();
+        //self::createEmojisTable();
+        //self::createUsersTable();
 
         self::$faker = Factory::create();
         self::$data['username'] = self::$faker->userName;
