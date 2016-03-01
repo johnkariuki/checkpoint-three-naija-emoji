@@ -273,6 +273,95 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Assert that PUT /emojis/{id} updates an exisiting emoji.
+     *
+     * Asserr that PATCH /emojis/{id} updates specifid fields of an emoji.
+     *
+     * @return void
+     */
+    public function testPutRoute()
+    {
+        $userName = self::$faker->userName;
+        $user = [
+            'username' => $userName,
+            'password' => '123456'
+        ];
+
+        self::$client->post('/auth/register', [
+            'form_params' => $user
+        ]);
+
+        $response = self::$client->post('/auth/login', [
+            'form_params' => $user
+         ]);
+
+        $token = json_decode($response->getBody())->token;
+
+        $response = self::$client->put('/emojis/'. self::$data['id'], [
+            'headers' => [
+                'token' => $token
+            ],
+            'form_params' => [
+                'name' => 'arms',
+                'char' => '💪',
+                'keywords' => 'strong, arm, weider',
+                'category' => 'arms'
+            ]
+        ]);
+
+         $this->assertEquals(201, $response->getStatusCode());
+         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+         $this->assertEquals('Emoji updated succesfully.', json_decode($response->getBody())->message);
+
+         $response = self::$client->patch('/emojis/'. self::$data['id'], [
+            'headers' => [
+                'token' => $token
+            ],
+            'form_params' => [
+                'name' => 'big arms'
+            ]
+         ]);
+
+         $this->assertEquals(201, $response->getStatusCode());
+         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+         $this->assertEquals('Emoji updated succesfully', json_decode($response->getBody())->message);
+    }
+
+    /**
+     * Assert that DELETE /emojis/{id} removes an exisiting emoji
+     *
+     * @return void
+     */
+    public function testDeleteEmoji()
+    {
+        $userName = self::$faker->userName;
+        $user = [
+            'username' => $userName,
+            'password' => '123456'
+        ];
+
+        self::$client->post('/auth/register', [
+            'form_params' => $user
+        ]);
+
+        $response = self::$client->post('/auth/login', [
+            'form_params' => $user
+         ]);
+
+        $token = json_decode($response->getBody())->token;
+        $response = self::$client->delete('/emojis/'. self::$data['id'], [
+            'headers' => [
+                'token' => $token
+            ]
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertEquals('Emoji deleted succesfully.', json_decode($response->getBody())->message);
+        $this->assertFalse(EmojiManagerController::findRecord(self::$data['id']));
+    }
+
+    /**
      *
      * close PDO Database connection.
      *
