@@ -57,7 +57,7 @@ class EmojiManagerController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                'message' => $e->getMessage()
+                'message' => "Error processing request."
             ]);
         }
 
@@ -94,7 +94,7 @@ class EmojiManagerController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                'message' => $e->getMessage()
+                'message' => "Error processing request."
             ]);
         }
 
@@ -156,7 +156,7 @@ class EmojiManagerController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                "message" => $e->getMessage()
+                "message" => "Error processing request."
             ]);
         }
 
@@ -212,7 +212,7 @@ class EmojiManagerController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                "message" => $e->getMessage()
+                "message" => "Error processing request."
             ]);
         }
 
@@ -263,7 +263,7 @@ class EmojiManagerController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                "message" => $e->getMessage()
+                "message" => "Error processing request."
             ]);
         }
 
@@ -299,7 +299,7 @@ class EmojiManagerController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                "message" => $e->getMessage()
+                "message" => "Error processing request."
             ]);
         }
 
@@ -337,7 +337,7 @@ class EmojiManagerController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                'message' => $e->getMessage()
+                'message' => "Error processing request."
             ]);
         }
 

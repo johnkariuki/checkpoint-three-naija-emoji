@@ -68,7 +68,7 @@ class AuthController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                'message' => $e->getMessage()
+                'message' => "Error processing request."
             ]);
         }
 
@@ -136,7 +136,7 @@ class AuthController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                'message' => $e->getMessage()
+                'message' => "Error processing request."
             ]);
         }
 
@@ -182,7 +182,7 @@ class AuthController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                'message' => $e->getMessage()
+                'message' => "Error processing request."
             ]);
         }
 
