@@ -29,46 +29,38 @@ class AuthController extends PotatoModel
                 throw new PDOException("Missing some required fields");
             }
 
-            if (! self::testEmptyElements($request->getParsedBody(), ['username', 'password'])) {
+            $user = self::findRecord([
+                'username' => $data['username'],
+                'password' => hash("sha256", $data['password'])
+            ]);
 
+            if (is_array($user) && ! empty($user)) {
                 $response = $response->withStatus(400);
                 $message = json_encode([
-                    "message" => "Empty values provided."
+                    'message' => "User already exists."
                 ]);
             } else {
-                $user = self::findRecord([
-                    'username' => $data['username'],
-                    'password' => hash("sha256", $data['password'])
-                ]);
+                // register user
+                $user = new self();
+                $user->username = $data['username'];
+                $user->password = hash("sha256", $data['password']);
 
-                if (is_array($user) && ! empty($user)) {
-                    $response = $response->withStatus(400);
+                if ($user->save()) {
+                    $response = $response->withStatus(201);
                     $message = json_encode([
-                        'message' => "User already exists."
+                        'message' => "User successfully registered."
                     ]);
                 } else {
-                    // register user
-                    $user = new self();
-                    $user->username = $data['username'];
-                    $user->password = hash("sha256", $data['password']);
-
-                    if ($user->save()) {
-                        $response = $response->withStatus(201);
-                        $message = json_encode([
-                            'message' => "User successfully registered."
-                        ]);
-                    } else {
-                        $response = $response->withStatus(400);
-                        $message = json_encode([
-                            'message' => "Error registering user."
-                        ]);
-                    }
+                    $response = $response->withStatus(400);
+                    $message = json_encode([
+                        'message' => "Error registering user."
+                    ]);
                 }
             }
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                'message' => "Error processing request."
+                'message' => $e->getMessage()
             ]);
         }
 
@@ -98,45 +90,38 @@ class AuthController extends PotatoModel
                 'username' => $data['username'],
                 'password' => hash("sha256", $data['password'])
             ]);
-            if (! self::testEmptyElements($request->getParsedBody(), ['username', 'password'])) {
 
-                $response = $response->withStatus(400);
-                $message = json_encode([
-                    "message" => "Empty values provided."
-                ]);
-            } else {
-                if (is_array($user) && ! empty($user)) {
-                    $token = hash("sha256", $data['username'] . md5(3.142) . time() . rand(1, 1001));
+            if (is_array($user) && ! empty($user)) {
+                $token = hash("sha256", $data['username'] . md5(3.142) . time() . rand(1, 1001));
 
-                    $tokenData = [
-                        'token' => $token,
-                        'expires' => time() + 86400,
-                        'id' => $user[id]
-                    ];
+                $tokenData = [
+                    'token' => $token,
+                    'expires' => time() + 86400,
+                    'id' => $user[id]
+                ];
 
-                    if (self::updateUserToken($tokenData)) {
-                        $response = $response->withStatus(200);
-                        $message = json_encode([
-                            'message' => 'login successful',
-                            'token' => $token
-                        ]);
-                    } else {
-                        $response = $response->withStatus(400);
-                        $message = json_encode([
-                            'message' => 'Error authenticating user.'
-                        ]);
-                    }
+                if (self::updateUserToken($tokenData)) {
+                    $response = $response->withStatus(200);
+                    $message = json_encode([
+                        'message' => 'login successful',
+                        'token' => $token
+                    ]);
                 } else {
                     $response = $response->withStatus(400);
                     $message = json_encode([
-                        'message' => "Invalid login credentials."
+                        'message' => 'Error authenticating user.'
                     ]);
                 }
+            } else {
+                $response = $response->withStatus(400);
+                $message = json_encode([
+                    'message' => "Invalid login credentials."
+                ]);
             }
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                'message' => "Error processing request."
+                'message' => $e->getMessage()
             ]);
         }
 
@@ -182,7 +167,7 @@ class AuthController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                'message' => "Error processing request."
+                'message' => $e->getMessage()
             ]);
         }
 
@@ -190,11 +175,6 @@ class AuthController extends PotatoModel
         return $response->write($message);
     }
 
-    /**
-     * Update the user's token details
-     * @param  array  $tokenData array of data to be updated
-     * @return boolean      true or false
-     */
     public static function updateUserToken(array $tokenData)
     {
         if (is_array($tokenData)) {
@@ -208,24 +188,5 @@ class AuthController extends PotatoModel
         }
 
         return false;
-    }
-
-    /**
-     * [testEmptyElements description]
-     * @param  array  $data           values passed by the user
-     * @param  array  $requiredFields required fields
-     * @return boolean                true or false
-     */
-    public static function testEmptyElements(array $data, array $requiredFields)
-    {
-        foreach ($data as $key => $value) {
-            if (in_array($key, $requiredFields)) {
-                //check if is empty
-                if (trim($value) == "") {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }

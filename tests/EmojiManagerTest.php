@@ -192,48 +192,6 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Assert that creating an emoji with blank required values
-     * throws an error
-     *
-     * @expectedException GuzzleHttp\Exception\ClientException
-     */
-    public function testAuthAddBlankEmoji()
-    {
-        $userName = self::$faker->userName;
-        $user = [
-            'username' => $userName,
-            'password' => '123456'
-        ];
-
-        self::$client->post('/auth/register', [
-            'form_params' => $user
-        ]);
-
-        $response = self::$client->post('/auth/login', [
-            'form_params' => $user
-         ]);
-
-        $token = json_decode($response->getBody())->token;
-
-        //no of emojis
-        $emojis = count(EmojiManagerController::findRecord([
-            'name' => 'innocent'
-        ]));
-
-        $response = self::$client->post('/emojis', [
-            'headers' => [
-                'token' => $token
-            ],
-            'form_params' => [
-                'name' => 'emojiname',
-                'char' => '',
-                'keywords' => '',
-                'category' => ''
-            ]
-        ]);
-    }
-
-    /**
      * assert that GET /emojis route returns all emojis in the database as
      * a JSON object.
      *
