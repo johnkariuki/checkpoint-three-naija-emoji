@@ -106,7 +106,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
  *
  * $return JSON     data for a record whose primary key matches provided id.
  */
-    $app->get('/emojis/{id}', function (Request $request, Response $response, array $args) {
+    $app->get('/emojis/{id:[0-9]+}', function (Request $request, Response $response, array $args) {
 
         return EmojiManagerController::getEmoji($request, $response, $args);
     });
@@ -145,7 +145,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
      *
      * @return JSON     data of success or failure of put request activity.
      */
-        $app->put('/{id}', function (Request $request, Response $response, array $args) {
+        $app->put('/{id:[0-9]+}', function (Request $request, Response $response, array $args) {
 
             return EmojiManagerController::putEmoji($request, $response, $args);
         });
@@ -161,7 +161,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
      * @return JSON     data of success or failure of put request activity.
      */
 
-        $app->patch('/{id}', function (Request $request, Response $response, array $args) {
+        $app->patch('/{id:[0-9]+}', function (Request $request, Response $response, array $args) {
 
             return EmojiManagerController::patchEmoji($request, $response, $args);
         });
@@ -176,7 +176,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
      *
      * @return Delete an emoji record.
      */
-        $app->delete('/{id}', function (Request $request, Response $response, array $args) {
+        $app->delete('/{id:[0-9]+}', function (Request $request, Response $response, array $args) {
 
             return EmojiManagerController::deleteEmoji($request, $response, $args);
         });

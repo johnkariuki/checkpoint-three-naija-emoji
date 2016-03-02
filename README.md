@@ -4,7 +4,6 @@ A RESTful emoji service that lets you add, find, update and delete emojis with a
 
 [![Build Status](https://travis-ci.org/andela-jkariuki/checkpoint-three-naija-emoji.svg?branch=master)](https://travis-ci.org/andela-jkariuki/checkpoint-three-naija-emoji)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/andela-jkariuki/checkpoint-three-naija-emoji/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/andela-jkariuki/checkpoint-three-naija-emoji/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/andela-jkariuki/checkpoint-three-naija-emoji/badges/build.png?b=master)](https://scrutinizer-ci.com/g/andela-jkariuki/checkpoint-three-naija-emoji/build-status/master)
 [![Software License][ico-license]](https://github.com/andela-jkariuki/checkpoint-three-naija-emoji)
 
 **TIA**
@@ -111,24 +110,24 @@ Succesfully fetched emojis returns
 ```json
 [
   {
-    "id": 44,
+    "id": 119,
     "name": "innocent",
     "char": "😇 ",
-    "keywords": "[\"happy\",\" holy\",\" angel\",\" sweet\",\" awww\",\" innocent\"]",
+    "keywords": "['happy',' holy',' angel',' sweet',' awww',' innocent']",
     "category": "person",
-    "date_created": "2016-02-29 23:09:42",
-    "date_modified": "2016-02-29 23:09:42",
-    "created_by": "Marlen.Mraz"
+    "date_created": "2016-03-02 18:44:43",
+    "date_modified": "2016-03-02 18:44:43",
+    "created_by": "doris.carter"
   },
   {
-    "id": 45,
-    "name": "arms",
-    "char": "💪",
-    "keywords": "[\"strong\",\" arm\",\" weider\"]",
-    "category": "arms",
-    "date_created": "2016-03-01 06:54:02",
-    "date_modified": "2016-03-01 07:04:36",
-    "created_by": "Kianna64"
+    "id": 99,
+    "name": "bikini",
+    "char": "👙",
+    "keywords": "['bikini',' sexy swim']",
+    "category": "clothes",
+    "date_created": "2016-03-02 08:09:49",
+    "date_modified": "2016-03-02 08:09:49",
+    "created_by": "ganga"
   }
 ]
 ```
@@ -150,7 +149,7 @@ One fetched emoji returns
   "id": 45,
   "name": "arms",
   "char": "💪",
-  "keywords": "[\"strong\",\" arm\",\" weider\"]",
+  "keywords": "['strong','arm','weider']",
   "category": "arms",
   "date_created": "2016-03-01 06:54:02",
   "date_modified": "2016-03-01 07:04:36",
@@ -215,7 +214,7 @@ Non empty emojis array found returns
     "id": 87,
     "name": "sun_glasses",
     "char": "😎",
-    "keywords": "[\"sun\",\"glasses\",\" cool\"]",
+    "keywords": "['sun\",'glasses','cool']",
     "category": "person",
     "date_created": "2016-03-01 18:09:10",
     "date_modified": "2016-03-01 18:09:10",

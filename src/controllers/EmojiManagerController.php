@@ -300,7 +300,7 @@ class EmojiManagerController extends PotatoModel
 
             if ($emojis) {
                 $response = $response->withStatus(200);
-                $message = json_encode($emojis);
+                $message = json_encode(self::prettifyArray($emojis, true));
             } else {
                 $response = $response->withStatus(400);
                 $message = json_encode([
