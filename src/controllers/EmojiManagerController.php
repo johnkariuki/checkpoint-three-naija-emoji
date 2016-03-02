@@ -52,7 +52,7 @@ class EmojiManagerController extends PotatoModel
                 $response = $response->withStatus(204);
             }
 
-            $message = json_encode($emojis);
+            $message = json_encode(self::prettifyArray($emojis, true));
 
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
@@ -82,7 +82,7 @@ class EmojiManagerController extends PotatoModel
 
             if ($emoji) {
                 $response = $response->withStatus(200);
-                $message = json_encode($emoji);
+                $message = json_encode(self::prettifyArray($emoji, false));
             } else {
                 $response = $response->withStatus(400);
                 $message = json_encode([
@@ -362,5 +362,32 @@ class EmojiManagerController extends PotatoModel
             }
         }
         return true;
+    }
+
+    /**
+     * Escape returned keywords array
+     * @param  array   $emoji array of emoji data
+     * @param  boolean $multi multi or single arrray
+     * @return array         array of emoji data
+     */
+    public static function prettifyArray(array $emoji, $multi = false)
+    {
+        if ($multi) {
+            foreach ($emoji as $emojiKey => $singlEmoji) {
+                foreach ($singlEmoji as $key => $value) {
+                    if ($key === 'keywords') {
+                        $emoji[$emojiKey][$key] = str_replace('"', "'", $singlEmoji[$key]);
+                    }
+                }
+            }
+        } else {
+            foreach ($emoji as $key => $value) {
+                if ($key === 'keywords') {
+                    $emoji[$key] = str_replace('"', "'", $emoji[$key]);
+                    break;
+                }
+            }
+        }
+        return $emoji;
     }
 }
