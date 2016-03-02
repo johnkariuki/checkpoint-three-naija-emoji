@@ -52,12 +52,12 @@ class EmojiManagerController extends PotatoModel
                 $response = $response->withStatus(204);
             }
 
-            $message = json_encode(self::prettifyArray($emojis, true));
+            $message = json_encode($emojis);
 
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                'message' => "Error processing request."
+                'message' => $e->getMessage()
             ]);
         }
 
@@ -82,7 +82,7 @@ class EmojiManagerController extends PotatoModel
 
             if ($emoji) {
                 $response = $response->withStatus(200);
-                $message = json_encode(self::prettifyArray($emoji, false));
+                $message = json_encode($emoji);
             } else {
                 $response = $response->withStatus(400);
                 $message = json_encode([
@@ -94,7 +94,7 @@ class EmojiManagerController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                'message' => "Error processing request."
+                'message' => $e->getMessage()
             ]);
         }
 
@@ -115,48 +115,38 @@ class EmojiManagerController extends PotatoModel
     public static function postEmoji($request, $response, $args)
     {
         $data = $request->getParsedBody();
-        $required = ['name', 'char', 'keywords', 'category'];
         try {
-            if (is_array($data) && count(array_diff($required, array_keys($data)))) {
+            if (is_array($data) && count(array_diff(['name', 'char', 'keywords', 'category'], array_keys($data)))) {
                 throw new PDOException("Missing some required fields");
             } else {
+                $emoji = new self();
 
-                if (! self::testEmptyElements($data, $required)) {
+                $emoji->name = $data["name"];
+                $emoji->char = $data["char"];
+                $emoji->keywords = json_encode(explode(",", $data["keywords"]));
+                $emoji->category = $data["category"];
+                $emoji->date_created = Carbon::now()->toDateTimeString();
+                $emoji->date_modified = Carbon::now()->toDateTimeString();
+                $emoji->created_by = AuthController::findRecord([
+                        "token" => $request->getHeader('HTTP_TOKEN')[0]
+                    ])["username"];
 
-                    $response = $response->withStatus(400);
+                if ($emoji->save()) {
+                    $response = $response->withStatus(201);
                     $message = json_encode([
-                        "message" => "Empty values provided."
+                        "message" => "Emoji added succesfully."
                     ]);
                 } else {
-                    $emoji = new self();
-
-                    $emoji->name = $data["name"];
-                    $emoji->char = $data["char"];
-                    $emoji->keywords = json_encode(explode(",", $data["keywords"]));
-                    $emoji->category = $data["category"];
-                    $emoji->date_created = Carbon::now()->toDateTimeString();
-                    $emoji->date_modified = Carbon::now()->toDateTimeString();
-                    $emoji->created_by = AuthController::findRecord([
-                            "token" => $request->getHeader('HTTP_TOKEN')[0]
-                        ])["username"];
-
-                    if ($emoji->save()) {
-                        $response = $response->withStatus(201);
-                        $message = json_encode([
-                            "message" => "Emoji added succesfully."
-                        ]);
-                    } else {
-                        $response = $response->withStatus(304);
-                        $message = json_encode([
-                            "message" => "Error adding emoji."
-                        ]);
-                    }
+                    $response = $response->withStatus(304);
+                    $message = json_encode([
+                        "message" => "Error adding emoji."
+                    ]);
                 }
             }
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                "message" => "Error processing request."
+                "message" => $e->getMessage()
             ]);
         }
 
@@ -178,41 +168,32 @@ class EmojiManagerController extends PotatoModel
     {
         try {
             $emoji = self::find($args['id']);
-            $required = ['name', 'char', 'keywords', 'category'];
 
-            if (count(array_diff($required, array_keys($request->getParsedBody())))) {
+            if (count(array_diff(['name', 'char', 'keywords', 'category'], array_keys($request->getParsedBody())))) {
                 throw new PDOException("Missing some required fields");
             } else {
-                if (! self::testEmptyElements($request->getParsedBody(), $required)) {
+                foreach ($request->getParsedBody() as $key => $value) {
+                    $emoji->$key = $key === "keywords" ? json_encode(explode(",", $value)) : $value;
+                }
 
-                    $response = $response->withStatus(400);
+                $emoji->date_modified = Carbon::now()->toDateTimeString();
+
+                if ($emoji->save()) {
+                    $response = $response->withStatus(201);
                     $message = json_encode([
-                        "message" => "Empty values provided."
+                        "message" => "Emoji updated succesfully."
                     ]);
                 } else {
-                    foreach ($request->getParsedBody() as $key => $value) {
-                        $emoji->$key = $key === "keywords" ? json_encode(explode(",", $value)) : $value;
-                    }
-
-                    $emoji->date_modified = Carbon::now()->toDateTimeString();
-
-                    if ($emoji->save()) {
-                        $response = $response->withStatus(201);
-                        $message = json_encode([
-                            "message" => "Emoji updated succesfully."
-                        ]);
-                    } else {
-                        $response = $response->withStatus(304);
-                        $message = json_encode([
-                            "message" => "Error updating emoji."
-                        ]);
-                    }
+                    $response = $response->withStatus(304);
+                    $message = json_encode([
+                        "message" => "Error updating emoji."
+                    ]);
                 }
             }
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                "message" => "Error processing request."
+                "message" => $e->getMessage()
             ]);
         }
 
@@ -234,36 +215,28 @@ class EmojiManagerController extends PotatoModel
     {
         try {
             $emoji = self::find($args['id']);
-            $required = ['name', 'char', 'keywords', 'category'];
 
-            if (! self::testEmptyElements($request->getParsedBody(), $required)) {
-                    $response = $response->withStatus(400);
-                    $message = json_encode([
-                        "message" => "Empty values provided."
-                    ]);
+            foreach ($request->getParsedBody() as $key => $value) {
+                $emoji->$key = $key === "keywords" ? json_encode(explode(",", $value)) : $value;
+            }
+
+            $emoji->date_modified = Carbon::now()->toDateTimeString();
+
+            if ($emoji->save()) {
+                $response = $response->withStatus(201);
+                $message = json_encode([
+                    "message" => "Emoji updated succesfully"
+                ]);
             } else {
-                foreach ($request->getParsedBody() as $key => $value) {
-                    $emoji->$key = $key === "keywords" ? json_encode(explode(",", $value)) : $value;
-                }
-
-                $emoji->date_modified = Carbon::now()->toDateTimeString();
-
-                if ($emoji->save()) {
-                    $response = $response->withStatus(201);
-                    $message = json_encode([
-                        "message" => "Emoji updated succesfully"
-                    ]);
-                } else {
-                    $response = $response->withStatus(304);
-                    $message = json_encode([
-                        "message" => "Error updating emoji"
-                    ]);
-                }
+                $response = $response->withStatus(304);
+                $message = json_encode([
+                    "message" => "Error updating emoji"
+                ]);
             }
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                "message" => "Error processing request."
+                "message" => $e->getMessage()
             ]);
         }
 
@@ -299,7 +272,7 @@ class EmojiManagerController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                "message" => "Error processing request."
+                "message" => $e->getMessage()
             ]);
         }
 
@@ -337,57 +310,11 @@ class EmojiManagerController extends PotatoModel
         } catch (PDOException $e) {
             $response = $response->withStatus(400);
             $message = json_encode([
-                'message' => "Error processing request."
+                'message' => $e->getMessage()
             ]);
         }
 
         $response = $response->withHeader('Content-type', 'application/json');
         return $response->write($message);
-    }
-
-    /**
-     * [testEmptyElements description]
-     * @param  array  $data           values passed by the user
-     * @param  array  $requiredFields required fields
-     * @return boolean                true or false
-     */
-    public static function testEmptyElements(array $data, array $requiredFields)
-    {
-        foreach ($data as $key => $value) {
-            if (in_array($key, $requiredFields)) {
-                //check if is empty
-                if (trim($value) == "") {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Escape returned keywords array
-     * @param  array   $emoji array of emoji data
-     * @param  boolean $multi multi or single arrray
-     * @return array         array of emoji data
-     */
-    public static function prettifyArray(array $emoji, $multi = false)
-    {
-        if ($multi) {
-            foreach ($emoji as $emojiKey => $singlEmoji) {
-                foreach ($singlEmoji as $key => $value) {
-                    if ($key === 'keywords') {
-                        $emoji[$emojiKey][$key] = str_replace('"', "'", $singlEmoji[$key]);
-                    }
-                }
-            }
-        } else {
-            foreach ($emoji as $key => $value) {
-                if ($key === 'keywords') {
-                    $emoji[$key] = str_replace('"', "'", $emoji[$key]);
-                    break;
-                }
-            }
-        }
-        return $emoji;
     }
 }
