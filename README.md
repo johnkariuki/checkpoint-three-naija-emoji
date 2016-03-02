@@ -29,6 +29,20 @@ Missing required fields return
 }
 ```
 
+adding null/empt values will return
+```json
+{
+  "message": "Empty values provided."
+}
+```
+
+Errored requests will return
+```json
+{
+  "message": "Error processing request."
+}
+```
+
 **Attach the token as a header with key `token` to authenticated routes**
 
 Invalid authenticated paths (without token header) returns
