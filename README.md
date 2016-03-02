@@ -8,7 +8,6 @@ A RESTful emoji service that lets you add, find, update and delete emojis with a
 [![Software License][ico-license]](https://github.com/andela-jkariuki/checkpoint-three-naija-emoji)
 
 **TIA**
-
 ###API Root
 
 The Naija Emoji APi is accesible throgh the url 
@@ -262,7 +261,6 @@ If you discover any security related issues, please email [John Kariuki](john.ka
 [John kariuki](https://github.com/andela-jkariuki)
 
 ## License
-
 ### The MIT License (MIT)
 
 Copyright (c) 2016 John kariuki <john.kariuki@andela.com>
