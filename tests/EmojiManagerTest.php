@@ -315,6 +315,34 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Assert that empty values returns bad request
+     *
+     * @expectedException GuzzleHttp\Exception\ClientException
+     *
+     * @return void
+     */
+    public function testPassEmptyFields()
+    {
+        $response = self::$client->get('/emojis/search?field=category&name=');
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+    }
+
+    /**
+     * Assert that null data returned throws bad request
+     *
+     * @expectedException GuzzleHttp\Exception\ClientException
+     *
+     * @return void
+     */
+    public function testNoDatafoundByField()
+    {
+        $response = self::$client->get('/emojis/search?field=category&name=johndoeslimguy');
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+    }
+
+    /**
      * Assert that PUT /emojis/{id} updates an exisiting emoji.
      *
      * Asserr that PATCH /emojis/{id} updates specifid fields of an emoji.
