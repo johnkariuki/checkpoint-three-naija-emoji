@@ -302,7 +302,7 @@ class EmojiManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetEmojiByField()
     {
-        $response = self::$client->get('/emojis/category/person');
+        $response = self::$client->get('/emojis/search?field=category&name=person');
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
 
