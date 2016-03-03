@@ -281,9 +281,9 @@ class EmojiManagerController extends PotatoModel
     }
 
     /**
-     * @route GET /emojis/{field}/{name}
+     * @route GET /search?{field}&{name}
      *
-     * @method   [/emojis/{field}/{name}(GET field,name) Search all records
+     * @method   [GET /search?{field}&{name}(GET field, name) Search all records
      * whose fields match a certain name.
      *
      * @requiredParams field, name
@@ -294,18 +294,30 @@ class EmojiManagerController extends PotatoModel
     public static function searchCategory($request, $response, $args)
     {
         try {
-            $emojis = EmojiManagerController::findRecords([
-                    $args['field'] => $args['name']
-                ]);
+            $params = $request->getQueryParams();
+            if (count(array_diff(['field', 'name'], array_keys($params)))) {
+                throw new PDOException("Missing some required parameters");
+            }
 
-            if ($emojis) {
-                $response = $response->withStatus(200);
-                $message = json_encode(self::prettifyArray($emojis, true));
+            if (! self::testEmptyElements($params, ['field', 'name'])) {
+                    $response = $response->withStatus(400);
+                    $message = json_encode([
+                        "message" => "Empty values provided."
+                    ]);
             } else {
-                $response = $response->withStatus(400);
-                $message = json_encode([
-                    'message' => "no emojis found whose {$args['field']} field is  {$args['name']}"
-                ]);
+                $emojis = EmojiManagerController::findRecords([
+                        $params['field'] => $params['name']
+                    ]);
+
+                if ($emojis) {
+                    $response = $response->withStatus(200);
+                    $message = json_encode(self::prettifyArray($emojis, true));
+                } else {
+                    $response = $response->withStatus(400);
+                    $message = json_encode([
+                        'message' => "no emojis found whose {$params['field']} field is {$params['name']}"
+                    ]);
+                }
             }
         } catch (PDOException $e) {
             $response = $response->withStatus(400);

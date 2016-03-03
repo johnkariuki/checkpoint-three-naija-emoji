@@ -193,7 +193,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
      *
      * @return JSON All records that match the criteria
      */
-    $app->get('/emojis/{field}/{name}', function (Request $request, Response $response, array $args) {
+    $app->get('/emojis/search', function (Request $request, Response $response, array $args) {
 
         return EmojiManagerController::searchCategory($request, $response, $args);
     });

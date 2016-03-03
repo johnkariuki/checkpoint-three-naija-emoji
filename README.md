@@ -204,8 +204,8 @@ A failed delete returns:
 }
 ```
 
-###Search By field GET /emojis/{field}/{name}
-Route: `https://naijaemoji-staging.herokuapp.com/emojis/created_by/oscar`
+###Search By field GET /emojis/search?field={field}&name={name}
+Route: `https://naijaemoji-staging.herokuapp.com/emojis/search?field=category&name=person`
 
 Non empty emojis array found returns
 ```json
@@ -214,7 +214,7 @@ Non empty emojis array found returns
     "id": 87,
     "name": "sun_glasses",
     "char": "😎",
-    "keywords": "['sun\",'glasses','cool']",
+    "keywords": "['sun','glasses','cool']",
     "category": "person",
     "date_created": "2016-03-01 18:09:10",
     "date_modified": "2016-03-01 18:09:10",
